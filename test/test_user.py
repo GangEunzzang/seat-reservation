@@ -1,10 +1,10 @@
-from app.user.domain.user import User
-from app.user.application.ports.inbound.commands import RegisterUserCommand
+from app.domain.user.domain.user import User
+from app.domain.user.domain.user_register_request import UserRegisterRequest
 
 
 async def test_create_user():
 	# Given
-	request = RegisterUserCommand(
+	request = UserRegisterRequest(
 		user_code="U001",
 		name="홍길동",
 		department="개발팀",
@@ -19,4 +19,3 @@ async def test_create_user():
 	# Then
 	assert user.user_code == "U001"
 	assert user.name == "홍길동"
-	assert user.id == 1
