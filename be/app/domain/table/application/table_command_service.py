@@ -1,3 +1,4 @@
+from app.core.exceptions import DomainException, ErrorCode
 from app.domain.table.application.ports.inbound.table_command_use_case import TableCommandUseCase
 from app.domain.table.application.ports.outbound.table_repository import TableRepository
 from app.domain.table.domain.table import Table
@@ -15,6 +16,6 @@ class TableCommandService(TableCommandUseCase):
 	async def delete(self, table_id: int) -> None:
 		table = await self.table_repository.find_by_id(table_id)
 		if not table:
-			raise ValueError(f"Table with id {table_id} not found")
+			raise DomainException(ErrorCode.TABLE_NOT_FOUND)
 
 		await self.table_repository.delete(table_id)

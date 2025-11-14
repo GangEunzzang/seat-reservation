@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock
 
+from app.core.exceptions import DomainException, ErrorCode
 from app.domain.user.application.user_command_service import UserCommandService
 from app.domain.user.domain.user_register_request import UserRegisterRequest
 from test.domain.user.user_fixture import UserFixture
@@ -64,10 +65,11 @@ async def test_register_user_duplicate_user_code(user_command_service, mock_user
 	mock_user_repository.exists_by_user_code.return_value = True
 
 	# When & Then
-	with pytest.raises(ValueError) as exc_info:
+	with pytest.raises(DomainException) as exc_info:
 		await user_command_service.register(request)
 
-	assert "already exists" in str(exc_info.value)
+	assert exc_info.value.error_code == ErrorCode.USER_CODE_ALREADY_EXISTS
+	assert "DUPLICATE001" in exc_info.value.message
 	mock_user_repository.exists_by_user_code.assert_called_once_with("DUPLICATE001")
 	mock_user_repository.save.assert_not_called()
 
@@ -95,9 +97,9 @@ async def test_delete_user_not_found(user_command_service, mock_user_repository)
 	mock_user_repository.find_by_id.return_value = None
 
 	# When & Then
-	with pytest.raises(ValueError) as exc_info:
+	with pytest.raises(DomainException) as exc_info:
 		await user_command_service.delete(user_id)
 
-	assert "not found" in str(exc_info.value)
+	assert exc_info.value.error_code == ErrorCode.USER_NOT_FOUND
 	mock_user_repository.find_by_id.assert_called_once_with(user_id)
 	mock_user_repository.delete.assert_not_called()

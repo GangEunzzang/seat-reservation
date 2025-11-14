@@ -1,3 +1,4 @@
+from app.core.exceptions import DomainException, ErrorCode
 from app.domain.user.application.ports.inbound.user_command_use_case import UserCommandUseCase
 from app.domain.user.application.ports.outbound.user_repository import UserRepository
 from app.domain.user.domain.user import User
@@ -11,7 +12,7 @@ class UserCommandService(UserCommandUseCase):
 
 	async def register(self, request: UserRegisterRequest) -> User:
 		if await self.user_repository.exists_by_user_code(request.user_code):
-			raise ValueError(f"User code '{request.user_code}' already exists")
+			raise DomainException(ErrorCode.USER_CODE_ALREADY_EXISTS, user_code=request.user_code)
 
 		user = User.create(request)
 		return await self.user_repository.save(user)
@@ -19,6 +20,6 @@ class UserCommandService(UserCommandUseCase):
 	async def delete(self, user_id: int) -> None:
 		user = await self.user_repository.find_by_id(user_id)
 		if not user:
-			raise ValueError(f"User with id {user_id} not found")
+			raise DomainException(ErrorCode.USER_NOT_FOUND)
 
 		await self.user_repository.delete(user_id)

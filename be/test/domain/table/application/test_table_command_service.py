@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock
 
+from app.core.exceptions import DomainException, ErrorCode
 from app.domain.table.application.table_command_service import TableCommandService
 from test.domain.table.table_fixture import TableFixture
 
@@ -55,9 +56,9 @@ async def test_delete_table_not_found(table_command_service, mock_table_reposito
 	mock_table_repository.find_by_id.return_value = None
 
 	# When & Then
-	with pytest.raises(ValueError) as exc_info:
+	with pytest.raises(DomainException) as exc_info:
 		await table_command_service.delete(table_id)
 
-	assert "not found" in str(exc_info.value)
+	assert exc_info.value.error_code == ErrorCode.TABLE_NOT_FOUND
 	mock_table_repository.find_by_id.assert_called_once_with(table_id)
 	mock_table_repository.delete.assert_not_called()
