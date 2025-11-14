@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 
-from app.domain.user.application.dto.user_command import RegisterUserCommand
 from app.domain.user.domain.user import User
+from app.domain.user.domain.user_register_request import UserRegisterRequest
 
 
 class UserCommandUseCase(ABC):
 
 	@abstractmethod
-	async def register(self, command: RegisterUserCommand) -> User:
+	async def register(self, request: UserRegisterRequest) -> User:
 		"""사용자 등록"""
 		pass
 
