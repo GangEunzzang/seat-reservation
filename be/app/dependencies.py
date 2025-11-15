@@ -8,6 +8,9 @@ from app.user.application.user_query_service import UserQueryService
 from app.table.adapter.outbound.persistence.sqlalchemy_table_repository import SQLAlchemyTableRepository
 from app.table.application.table_command_service import TableCommandService
 from app.table.application.table_query_service import TableQueryService
+from app.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
+from app.seat.application.seat_command_service import SeatCommandService
+from app.seat.application.seat_query_service import SeatQueryService
 
 
 # User Services
@@ -30,5 +33,16 @@ def get_table_command_service(session: AsyncSession = Depends(get_async_session)
 def get_table_query_service(session: AsyncSession = Depends(get_async_session)) -> TableQueryService:
     repository = SQLAlchemyTableRepository(session)
     return TableQueryService(repository)
+
+
+# Seat Services
+def get_seat_command_service(session: AsyncSession = Depends(get_async_session)) -> SeatCommandService:
+    repository = SQLAlchemySeatRepository(session)
+    return SeatCommandService(repository)
+
+
+def get_seat_query_service(session: AsyncSession = Depends(get_async_session)) -> SeatQueryService:
+    repository = SQLAlchemySeatRepository(session)
+    return SeatQueryService(repository)
 
 
