@@ -29,3 +29,14 @@ class SQLAlchemyReservationRepository(ReservationRepository):
 		stmt = delete(Reservation).where(Reservation.id == reservation_id)
 		await self.session.execute(stmt)
 		await self.session.flush()
+
+	async def find_active_by_seat_id(self, seat_id: int) -> Optional[Reservation]:
+		from app.domain.reservation.domain.reservation_status import ReservationStatus
+		stmt = (
+		select(Reservation)
+		.where(
+			Reservation.seat_id == seat_id,
+			Reservation.status == ReservationStatus.RESERVED.code
+		))
+		result = await self.session.execute(stmt)
+		return result.scalars().first()
