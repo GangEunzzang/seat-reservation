@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQLAlchemyUserRepository
-from app.domain.user.application.user_query_service import UserQueryService
+from app.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQLAlchemyUserRepository
+from app.user.application.user_query_service import UserQueryService
 from test.domain.user.user_fixture import UserFixture
 
 

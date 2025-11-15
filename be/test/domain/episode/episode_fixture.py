@@ -2,7 +2,7 @@
 
 from datetime import date
 
-from app.domain.episode.domain.episode import Episode
+from app.episode.domain.episode import Episode
 
 
 class EpisodeFixture:

@@ -1,6 +1,6 @@
 """Table 도메인 테스트 Fixture"""
 
-from app.domain.table.domain.table import Table
+from app.table.domain.table import Table
 
 
 class TableFixture:

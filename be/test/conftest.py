@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.config.database import Base
+from core.config.database import Base
 from app.main import app
 
 TEST_DB_URL = "sqlite:///:memory:"

@@ -1,7 +1,7 @@
 import pytest
 
 from test.domain.reservation.reservation_fixture import ReservationFixture
-from app.domain.reservation.domain.reservation_status import ReservationStatus
+from app.reservation.domain.reservation_status import ReservationStatus
 
 
 def test_create_reservation():

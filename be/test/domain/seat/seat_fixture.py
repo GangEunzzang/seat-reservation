@@ -1,6 +1,6 @@
 """Seat 도메인 테스트 Fixture"""
 
-from app.domain.seat.domain.seat import Seat
+from app.seat.domain.seat import Seat
 
 
 class SeatFixture:

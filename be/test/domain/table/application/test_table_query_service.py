@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.table.adapter.outbound.persistence.sqlalchemy_table_repository import SQLAlchemyTableRepository
-from app.domain.table.application.table_query_service import TableQueryService
+from app.table.adapter.outbound.persistence.sqlalchemy_table_repository import SQLAlchemyTableRepository
+from app.table.application.table_query_service import TableQueryService
 from test.domain.table.table_fixture import TableFixture
 
 

@@ -1,9 +1,9 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exception.domain_exception import DomainException, ErrorCode
-from app.domain.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
-from app.domain.seat.application.seat_command_service import SeatCommandService
+from core.exception.domain_exception import DomainException, ErrorCode
+from app.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
+from app.seat.application.seat_command_service import SeatCommandService
 from test.domain.seat.seat_fixture import SeatFixture
 
 

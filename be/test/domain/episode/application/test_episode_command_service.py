@@ -2,10 +2,10 @@ import pytest
 from datetime import date
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exception.domain_exception import DomainException
-from app.core.exception.error_code import ErrorCode
-from app.domain.episode.adapter.outbound.persistence.sqlalchemy_episode_repository import SQLAlchemyEpisodeRepository
-from app.domain.episode.application.episode_command_service import EpisodeCommandService
+from core.exception.domain_exception import DomainException
+from core.exception.error_code import ErrorCode
+from app.episode.adapter.outbound.persistence.sqlalchemy_episode_repository import SQLAlchemyEpisodeRepository
+from app.episode.application.episode_command_service import EpisodeCommandService
 from test.domain.episode.episode_fixture import EpisodeFixture
 
 

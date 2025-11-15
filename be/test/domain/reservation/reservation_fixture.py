@@ -1,6 +1,6 @@
 """Reservation 도메인 테스트 Fixture"""
 
-from app.domain.reservation.domain.reservation import Reservation
+from app.reservation.domain.reservation import Reservation
 
 
 class ReservationFixture:

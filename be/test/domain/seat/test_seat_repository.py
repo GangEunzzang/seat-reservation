@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
+from app.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
 from test.domain.seat.seat_fixture import SeatFixture
 
 

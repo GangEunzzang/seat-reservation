@@ -1,7 +1,7 @@
 """User 도메인 테스트 Fixture"""
 
-from app.domain.user.domain.user import User
-from app.domain.user.domain.user_register_request import UserRegisterRequest
+from app.user.domain.user import User
+from app.user.domain.user_register_request import UserRegisterRequest
 
 
 class UserFixture:

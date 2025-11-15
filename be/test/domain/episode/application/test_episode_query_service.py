@@ -1,8 +1,8 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.episode.adapter.outbound.persistence.sqlalchemy_episode_repository import SQLAlchemyEpisodeRepository
-from app.domain.episode.application.episode_query_service import EpisodeQueryService
+from app.episode.adapter.outbound.persistence.sqlalchemy_episode_repository import SQLAlchemyEpisodeRepository
+from app.episode.application.episode_query_service import EpisodeQueryService
 from test.domain.episode.episode_fixture import EpisodeFixture
 
 
