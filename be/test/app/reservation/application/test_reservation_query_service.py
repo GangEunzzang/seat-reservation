@@ -5,7 +5,7 @@ from app.reservation.adapter.outbound.persistence.sqlalchemy_reservation_reposit
 from app.reservation.application.reservation_query_service import ReservationQueryService
 from core.exception.domain_exception import DomainException
 from core.exception.error_code import ErrorCode
-from test.domain.reservation.reservation_fixture import ReservationFixture
+from test.app.reservation.reservation_fixture import ReservationFixture
 
 
 @pytest.fixture

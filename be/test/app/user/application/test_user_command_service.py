@@ -5,7 +5,7 @@ from core.exception.domain_exception import DomainException, ErrorCode
 from app.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQLAlchemyUserRepository
 from app.user.application.user_command_service import UserCommandService
 from app.user.domain.user_register_request import UserRegisterRequest
-from test.domain.user.user_fixture import UserFixture
+from test.app.user.user_fixture import UserFixture
 
 
 @pytest.fixture

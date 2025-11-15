@@ -6,7 +6,7 @@ from core.exception.domain_exception import DomainException
 from core.exception.error_code import ErrorCode
 from app.episode.adapter.outbound.persistence.sqlalchemy_episode_repository import SQLAlchemyEpisodeRepository
 from app.episode.application.episode_command_service import EpisodeCommandService
-from test.domain.episode.episode_fixture import EpisodeFixture
+from test.app.episode.episode_fixture import EpisodeFixture
 
 
 @pytest.fixture

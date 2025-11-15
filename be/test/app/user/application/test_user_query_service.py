@@ -5,7 +5,7 @@ from app.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQL
 from app.user.application.user_query_service import UserQueryService
 from core.exception.domain_exception import DomainException
 from core.exception.error_code import ErrorCode
-from test.domain.user.user_fixture import UserFixture
+from test.app.user.user_fixture import UserFixture
 
 
 @pytest.fixture

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exception.domain_exception import DomainException, ErrorCode
 from app.table.adapter.outbound.persistence.sqlalchemy_table_repository import SQLAlchemyTableRepository
 from app.table.application.table_command_service import TableCommandService
-from test.domain.table.table_fixture import TableFixture
+from test.app.table.table_fixture import TableFixture
 
 
 @pytest.fixture

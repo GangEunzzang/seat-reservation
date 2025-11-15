@@ -5,7 +5,7 @@ from app.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQL
 from app.seat.application.seat_query_service import SeatQueryService
 from core.exception.domain_exception import DomainException
 from core.exception.error_code import ErrorCode
-from test.domain.seat.seat_fixture import SeatFixture
+from test.app.seat.seat_fixture import SeatFixture
 
 
 @pytest.fixture

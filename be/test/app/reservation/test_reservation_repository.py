@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.reservation.adapter.outbound.persistence.sqlalchemy_reservation_repository import SQLAlchemyReservationRepository
-from test.domain.reservation.reservation_fixture import ReservationFixture
+from test.app.reservation.reservation_fixture import ReservationFixture
 
 
 @pytest.fixture

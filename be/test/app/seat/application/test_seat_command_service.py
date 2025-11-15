@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.exception.domain_exception import DomainException, ErrorCode
 from app.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
 from app.seat.application.seat_command_service import SeatCommandService
-from test.domain.seat.seat_fixture import SeatFixture
+from test.app.seat.seat_fixture import SeatFixture
 
 
 @pytest.fixture

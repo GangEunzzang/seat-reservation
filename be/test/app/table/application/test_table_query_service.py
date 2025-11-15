@@ -5,7 +5,7 @@ from app.table.adapter.outbound.persistence.sqlalchemy_table_repository import S
 from app.table.application.table_query_service import TableQueryService
 from core.exception.domain_exception import DomainException
 from core.exception.error_code import ErrorCode
-from test.domain.table.table_fixture import TableFixture
+from test.app.table.table_fixture import TableFixture
 
 
 @pytest.fixture

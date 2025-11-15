@@ -5,7 +5,7 @@ from app.episode.adapter.outbound.persistence.sqlalchemy_episode_repository impo
 from app.episode.application.episode_query_service import EpisodeQueryService
 from core.exception.domain_exception import DomainException
 from core.exception.error_code import ErrorCode
-from test.domain.episode.episode_fixture import EpisodeFixture
+from test.app.episode.episode_fixture import EpisodeFixture
 
 
 @pytest.fixture
