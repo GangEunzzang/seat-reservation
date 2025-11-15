@@ -1,4 +1,4 @@
-from app.core.exceptions import DomainException, ErrorCode
+from app.core.exception.domain_exception import DomainException, ErrorCode
 from app.domain.seat.application.ports.inbound.seat_command_use_case import SeatCommandUseCase
 from app.domain.seat.application.ports.outbound.seat_repository import SeatRepository
 from app.domain.seat.domain.seat import Seat

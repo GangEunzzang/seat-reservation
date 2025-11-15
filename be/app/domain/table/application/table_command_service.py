@@ -1,4 +1,4 @@
-from app.core.exceptions import DomainException, ErrorCode
+from app.core.exception.domain_exception import DomainException, ErrorCode
 from app.domain.table.application.ports.inbound.table_command_use_case import TableCommandUseCase
 from app.domain.table.application.ports.outbound.table_repository import TableRepository
 from app.domain.table.domain.table import Table

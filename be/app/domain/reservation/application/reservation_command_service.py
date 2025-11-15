@@ -1,4 +1,4 @@
-from app.core.exceptions import DomainException, ErrorCode
+from app.core.exception.domain_exception import DomainException, ErrorCode
 from app.domain.reservation.application.ports.inbound.reservation_command_use_case import ReservationCommandUseCase
 from app.domain.reservation.application.ports.outbound.reservation_repository import ReservationRepository
 from app.domain.reservation.domain.reservation import Reservation

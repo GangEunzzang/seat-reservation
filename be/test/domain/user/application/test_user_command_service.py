@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import DomainException, ErrorCode
+from app.core.exception.domain_exception import DomainException, ErrorCode
 from app.domain.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQLAlchemyUserRepository
 from app.domain.user.application.user_command_service import UserCommandService
 from app.domain.user.domain.user_register_request import UserRegisterRequest

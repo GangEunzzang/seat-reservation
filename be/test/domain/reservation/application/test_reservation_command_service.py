@@ -1,10 +1,10 @@
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.exceptions import DomainException, ErrorCode
+from app.core.exception.domain_exception import DomainException
+from app.core.exception.error_code import ErrorCode
 from app.domain.reservation.adapter.outbound.persistence.sqlalchemy_reservation_repository import SQLAlchemyReservationRepository
 from app.domain.reservation.application.reservation_command_service import ReservationCommandService
-from app.domain.reservation.domain.reservation_status import ReservationStatus
 from test.domain.reservation.reservation_fixture import ReservationFixture
 
 

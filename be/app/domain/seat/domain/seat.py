@@ -1,8 +1,8 @@
 from sqlalchemy import Integer
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.base_entity import Timestamp
-from app.core.database import Base
+from app.core.entity.base_entity import Timestamp
+from app.core.config.database import Base
 
 
 class Seat(Base, Timestamp):
