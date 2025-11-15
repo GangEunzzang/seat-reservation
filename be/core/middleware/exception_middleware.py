@@ -17,7 +17,7 @@ def exceptions_handler(app: FastAPI) -> None:
             content=ApiResponse.error(
                 message=exc.message,
                 code=exc.error_code.name
-            ).model_dump()
+            )
         )
 
     @app.exception_handler(StarletteHTTPException)
@@ -27,7 +27,7 @@ def exceptions_handler(app: FastAPI) -> None:
             content=ApiResponse.error(
                 message=str(exc.detail),
                 code=f"HTTP_{exc.status_code}"
-            ).model_dump()
+            )
         )
 
     @app.exception_handler(RequestValidationError)
@@ -43,7 +43,7 @@ def exceptions_handler(app: FastAPI) -> None:
             content=ApiResponse.error(
                 message="; ".join(error_messages),
                 code="VALIDATION_ERROR"
-            ).model_dump()
+            )
         )
 
     @app.exception_handler(ValueError)
@@ -53,7 +53,7 @@ def exceptions_handler(app: FastAPI) -> None:
             content=ApiResponse.error(
                 message=str(exc),
                 code="VALUE_ERROR"
-            ).model_dump()
+            )
         )
 
     @app.exception_handler(Exception)
@@ -63,5 +63,5 @@ def exceptions_handler(app: FastAPI) -> None:
             content=ApiResponse.error(
                 message="Internal server error",
                 code="INTERNAL_ERROR"
-            ).model_dump()
+            )
         )

@@ -1,4 +1,3 @@
-"""User API Response DTOs"""
 from pydantic import BaseModel, ConfigDict
 
 

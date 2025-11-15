@@ -1,4 +1,3 @@
-"""User API Request DTOs"""
 from pydantic import BaseModel
 
 
