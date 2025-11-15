@@ -1,64 +1,56 @@
 import pytest
-from unittest.mock import AsyncMock
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import DomainException, ErrorCode
+from app.domain.table.adapter.outbound.persistence.sqlalchemy_table_repository import SQLAlchemyTableRepository
 from app.domain.table.application.table_command_service import TableCommandService
 from test.domain.table.table_fixture import TableFixture
 
 
 @pytest.fixture
-def mock_table_repository():
-	return AsyncMock()
+def table_repository(async_session: AsyncSession) -> SQLAlchemyTableRepository:
+	return SQLAlchemyTableRepository(async_session)
 
 
 @pytest.fixture
-def table_command_service(mock_table_repository):
-	return TableCommandService(mock_table_repository)
+def table_command_service(table_repository) -> TableCommandService:
+	return TableCommandService(table_repository)
 
 
 @pytest.mark.asyncio
-async def test_create_table(table_command_service, mock_table_repository):
+async def test_create_table(table_command_service):
 	# Given
 	episode_id = 1
-	created_table = TableFixture.create_table(episode_id=episode_id)
-	created_table.id = 1
-	mock_table_repository.save.return_value = created_table
 
 	# When
 	result = await table_command_service.create(episode_id)
 
 	# Then
-	assert result.id == 1
-	assert result.episode_id == 1
-	mock_table_repository.save.assert_called_once()
+	assert result.id is not None
+	assert result.episode_id == episode_id
 
 
 @pytest.mark.asyncio
-async def test_delete_table(table_command_service, mock_table_repository):
+async def test_delete_table(table_command_service, table_repository):
 	# Given
-	table_id = 1
-	existing_table = TableFixture.create_table(episode_id=1)
-	existing_table.id = table_id
-	mock_table_repository.find_by_id.return_value = existing_table
+	table = TableFixture.create_table(episode_id=1)
+	saved_table = await table_repository.save(table)
 
 	# When
-	await table_command_service.delete(table_id)
+	await table_command_service.delete(saved_table.id)
 
 	# Then
-	mock_table_repository.find_by_id.assert_called_once_with(table_id)
-	mock_table_repository.delete.assert_called_once_with(table_id)
+	found_table = await table_repository.find_by_id(saved_table.id)
+	assert found_table is None
 
 
 @pytest.mark.asyncio
-async def test_delete_table_not_found(table_command_service, mock_table_repository):
+async def test_delete_table_not_found(table_command_service):
 	# Given
-	table_id = 9999
-	mock_table_repository.find_by_id.return_value = None
+	NON_EXISTENT_TABLE_ID = 9999
 
 	# When & Then
 	with pytest.raises(DomainException) as exc_info:
-		await table_command_service.delete(table_id)
+		await table_command_service.delete(NON_EXISTENT_TABLE_ID)
 
 	assert exc_info.value.error_code == ErrorCode.TABLE_NOT_FOUND
-	mock_table_repository.find_by_id.assert_called_once_with(table_id)
-	mock_table_repository.delete.assert_not_called()

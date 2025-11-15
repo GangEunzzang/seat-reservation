@@ -1,24 +1,25 @@
 import pytest
-from unittest.mock import AsyncMock
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.exceptions import DomainException, ErrorCode
+from app.domain.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQLAlchemyUserRepository
 from app.domain.user.application.user_command_service import UserCommandService
 from app.domain.user.domain.user_register_request import UserRegisterRequest
 from test.domain.user.user_fixture import UserFixture
 
 
 @pytest.fixture
-def mock_user_repository():
-	return AsyncMock()
+def user_repository(async_session: AsyncSession) -> SQLAlchemyUserRepository:
+	return SQLAlchemyUserRepository(async_session)
 
 
 @pytest.fixture
-def user_command_service(mock_user_repository):
-	return UserCommandService(mock_user_repository)
+def user_command_service(user_repository) -> UserCommandService:
+	return UserCommandService(user_repository)
 
 
 @pytest.mark.asyncio
-async def test_register_user(user_command_service, mock_user_repository):
+async def test_register_user(user_command_service):
 	# Given
 	request = UserRegisterRequest(
 		user_code="TEST001",
@@ -28,32 +29,22 @@ async def test_register_user(user_command_service, mock_user_repository):
 		phone_number="010-1234-5678",
 		episode_id=1
 	)
-	mock_user_repository.exists_by_user_code.return_value = False
-	created_user = UserFixture.create_user(
-		user_code=request.user_code,
-		name=request.name,
-		department=request.department,
-		position=request.position,
-		phone_number=request.phone_number,
-		episode_id=request.episode_id
-	)
-	created_user.id = 1
-	mock_user_repository.save.return_value = created_user
 
 	# When
 	result = await user_command_service.register(request)
 
 	# Then
-	assert result.id == 1
+	assert result.id is not None
 	assert result.user_code == "TEST001"
 	assert result.name == "홍길동"
-	mock_user_repository.exists_by_user_code.assert_called_once_with("TEST001")
-	mock_user_repository.save.assert_called_once()
 
 
 @pytest.mark.asyncio
-async def test_register_user_duplicate_user_code(user_command_service, mock_user_repository):
+async def test_register_user_duplicate_user_code(user_command_service, user_repository):
 	# Given
+	existing_user = UserFixture.create_user(user_code="DUPLICATE001", name="기존유저")
+	await user_repository.save(existing_user)
+
 	request = UserRegisterRequest(
 		user_code="DUPLICATE001",
 		name="홍길동",
@@ -62,7 +53,6 @@ async def test_register_user_duplicate_user_code(user_command_service, mock_user
 		phone_number="010-1234-5678",
 		episode_id=1
 	)
-	mock_user_repository.exists_by_user_code.return_value = True
 
 	# When & Then
 	with pytest.raises(DomainException) as exc_info:
@@ -70,36 +60,29 @@ async def test_register_user_duplicate_user_code(user_command_service, mock_user
 
 	assert exc_info.value.error_code == ErrorCode.USER_CODE_ALREADY_EXISTS
 	assert "DUPLICATE001" in exc_info.value.message
-	mock_user_repository.exists_by_user_code.assert_called_once_with("DUPLICATE001")
-	mock_user_repository.save.assert_not_called()
 
 
 @pytest.mark.asyncio
-async def test_delete_user(user_command_service, mock_user_repository):
+async def test_delete_user(user_command_service, user_repository):
 	# Given
-	user_id = 1
-	existing_user = UserFixture.create_user(user_code="TEST001", name="홍길동")
-	existing_user.id = user_id
-	mock_user_repository.find_by_id.return_value = existing_user
+	user = UserFixture.create_user(user_code="TEST001", name="홍길동")
+	saved_user = await user_repository.save(user)
 
 	# When
-	await user_command_service.delete(user_id)
+	await user_command_service.delete(saved_user.id)
 
 	# Then
-	mock_user_repository.find_by_id.assert_called_once_with(user_id)
-	mock_user_repository.delete.assert_called_once_with(user_id)
+	found_user = await user_repository.find_by_id(saved_user.id)
+	assert found_user is None
 
 
 @pytest.mark.asyncio
-async def test_delete_user_not_found(user_command_service, mock_user_repository):
+async def test_delete_user_not_found(user_command_service):
 	# Given
-	user_id = 9999
-	mock_user_repository.find_by_id.return_value = None
+	NON_EXISTENT_USER_ID = 9999
 
 	# When & Then
 	with pytest.raises(DomainException) as exc_info:
-		await user_command_service.delete(user_id)
+		await user_command_service.delete(NON_EXISTENT_USER_ID)
 
 	assert exc_info.value.error_code == ErrorCode.USER_NOT_FOUND
-	mock_user_repository.find_by_id.assert_called_once_with(user_id)
-	mock_user_repository.delete.assert_not_called()

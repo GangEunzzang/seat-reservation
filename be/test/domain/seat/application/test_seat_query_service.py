@@ -1,0 +1,67 @@
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.domain.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
+from app.domain.seat.application.seat_query_service import SeatQueryService
+from test.domain.seat.seat_fixture import SeatFixture
+
+
+@pytest.fixture
+def seat_repository(async_session: AsyncSession) -> SQLAlchemySeatRepository:
+	return SQLAlchemySeatRepository(async_session)
+
+
+@pytest.fixture
+def seat_query_service(seat_repository) -> SeatQueryService:
+	return SeatQueryService(seat_repository)
+
+
+@pytest.mark.asyncio
+async def test_get_seat_by_id(seat_query_service, seat_repository):
+	# Given
+	seat = SeatFixture.create_seat(table_id=1, seat_number=1)
+	saved_seat = await seat_repository.save(seat)
+
+	# When
+	result = await seat_query_service.get_seat_by_id(saved_seat.id)
+
+	# Then
+	assert result is not None
+	assert result.id == saved_seat.id
+	assert result.table_id == 1
+	assert result.seat_number == 1
+
+
+@pytest.mark.asyncio
+async def test_get_seat_by_id_not_found(seat_query_service):
+	# Given
+	NON_EXISTENT_SEAT_ID = 9999
+
+	# When
+	result = await seat_query_service.get_seat_by_id(NON_EXISTENT_SEAT_ID)
+
+	# Then
+	assert result is None
+
+
+@pytest.mark.asyncio
+async def test_get_seat_list_all(seat_query_service, seat_repository):
+	# Given
+	seats = SeatFixture.create_multiple_seats(table_id=1, count=5)
+	for seat in seats:
+		await seat_repository.save(seat)
+
+	# When
+	result = await seat_query_service.get_seat_list_all()
+
+	# Then
+	assert len(result) == 5
+
+
+@pytest.mark.asyncio
+async def test_get_seat_list_all_empty(seat_query_service):
+	# When
+	result = await seat_query_service.get_seat_list_all()
+
+	# Then
+	assert result == []
