@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.episode.adapter.outbound.persistence.sqlalchemy_episode_repository import SQLAlchemyEpisodeRepository
 from app.episode.application.episode_query_service import EpisodeQueryService
+from core.exception.domain_exception import DomainException
+from core.exception.error_code import ErrorCode
 from test.domain.episode.episode_fixture import EpisodeFixture
 
 
@@ -37,11 +39,11 @@ async def test_get_episode_by_id_not_found(episode_query_service):
 	# Given
 	NON_EXISTENT_EPISODE_ID = 9999
 
-	# When
-	result = await episode_query_service.get_episode_by_id(NON_EXISTENT_EPISODE_ID)
+	# When & Then
+	with pytest.raises(DomainException) as exc_info:
+		await episode_query_service.get_episode_by_id(NON_EXISTENT_EPISODE_ID)
 
-	# Then
-	assert result is None
+	assert exc_info.value.error_code == ErrorCode.EPISODE_NOT_FOUND
 
 
 @pytest.mark.asyncio

@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.table.adapter.outbound.persistence.sqlalchemy_table_repository import SQLAlchemyTableRepository
 from app.table.application.table_query_service import TableQueryService
+from core.exception.domain_exception import DomainException
+from core.exception.error_code import ErrorCode
 from test.domain.table.table_fixture import TableFixture
 
 
@@ -36,11 +38,11 @@ async def test_get_table_by_id_not_found(table_query_service):
 	# Given
 	NON_EXISTENT_TABLE_ID = 9999
 
-	# When
-	result = await table_query_service.get_table_by_id(NON_EXISTENT_TABLE_ID)
+	# When & Then
+	with pytest.raises(DomainException) as exc_info:
+		await table_query_service.get_table_by_id(NON_EXISTENT_TABLE_ID)
 
-	# Then
-	assert result is None
+	assert exc_info.value.error_code == ErrorCode.TABLE_NOT_FOUND
 
 
 @pytest.mark.asyncio

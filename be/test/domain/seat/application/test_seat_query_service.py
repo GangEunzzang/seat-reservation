@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.seat.adapter.outbound.persistence.sqlalchemy_seat_repository import SQLAlchemySeatRepository
 from app.seat.application.seat_query_service import SeatQueryService
+from core.exception.domain_exception import DomainException
+from core.exception.error_code import ErrorCode
 from test.domain.seat.seat_fixture import SeatFixture
 
 
@@ -37,11 +39,11 @@ async def test_get_seat_by_id_not_found(seat_query_service):
 	# Given
 	NON_EXISTENT_SEAT_ID = 9999
 
-	# When
-	result = await seat_query_service.get_seat_by_id(NON_EXISTENT_SEAT_ID)
+	# When & Then
+	with pytest.raises(DomainException) as exc_info:
+		await seat_query_service.get_seat_by_id(NON_EXISTENT_SEAT_ID)
 
-	# Then
-	assert result is None
+	assert exc_info.value.error_code == ErrorCode.SEAT_NOT_FOUND
 
 
 @pytest.mark.asyncio

@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.reservation.adapter.outbound.persistence.sqlalchemy_reservation_repository import SQLAlchemyReservationRepository
 from app.reservation.application.reservation_query_service import ReservationQueryService
+from core.exception.domain_exception import DomainException
+from core.exception.error_code import ErrorCode
 from test.domain.reservation.reservation_fixture import ReservationFixture
 
 
@@ -37,11 +39,11 @@ async def test_get_reservation_by_id_not_found(reservation_query_service):
 	# Given
 	NON_EXISTENT_RESERVATION_ID = 9999
 
-	# When
-	result = await reservation_query_service.get_reservation_by_id(NON_EXISTENT_RESERVATION_ID)
+	# When & Then
+	with pytest.raises(DomainException) as exc_info:
+		await reservation_query_service.get_reservation_by_id(NON_EXISTENT_RESERVATION_ID)
 
-	# Then
-	assert result is None
+	assert exc_info.value.error_code == ErrorCode.RESERVATION_NOT_FOUND
 
 
 @pytest.mark.asyncio

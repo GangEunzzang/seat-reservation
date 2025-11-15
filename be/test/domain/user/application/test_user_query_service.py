@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.user.adapter.outbound.persistence.sqlalchemy_user_repository import SQLAlchemyUserRepository
 from app.user.application.user_query_service import UserQueryService
+from core.exception.domain_exception import DomainException
+from core.exception.error_code import ErrorCode
 from test.domain.user.user_fixture import UserFixture
 
 
@@ -37,11 +39,11 @@ async def test_get_user_by_id_not_found(user_query_service):
 	# Given
 	NON_EXISTENT_USER_ID = 9999
 
-	# When
-	result = await user_query_service.get_user_by_id(NON_EXISTENT_USER_ID)
+	# When & Then
+	with pytest.raises(DomainException) as exc_info:
+		await user_query_service.get_user_by_id(NON_EXISTENT_USER_ID)
 
-	# Then
-	assert result is None
+	assert exc_info.value.error_code == ErrorCode.USER_NOT_FOUND
 
 
 @pytest.mark.asyncio
@@ -64,11 +66,11 @@ async def test_get_user_by_code_not_found(user_query_service):
 	# Given
 	NON_EXISTENT_USER_CODE = "NOTEXIST"
 
-	# When
-	result = await user_query_service.get_user_by_code(NON_EXISTENT_USER_CODE)
+	# When & Then
+	with pytest.raises(DomainException) as exc_info:
+		await user_query_service.get_user_by_code(NON_EXISTENT_USER_CODE)
 
-	# Then
-	assert result is None
+	assert exc_info.value.error_code == ErrorCode.USER_NOT_FOUND
 
 
 @pytest.mark.asyncio
