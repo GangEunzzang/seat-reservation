@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.v1.user.router import router as user_router
+from api.v1.user.user_router import router as user_router
 
 
 def register_routers(app: FastAPI) -> None:
