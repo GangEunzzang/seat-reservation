@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from app.reservation.domain.reservation import Reservation
 
@@ -7,7 +6,7 @@ from app.reservation.domain.reservation import Reservation
 class ReservationQueryUseCase(ABC):
 
 	@abstractmethod
-	async def get_reservation_by_id(self, reservation_id: int) -> Optional[Reservation]:
+	async def get_reservation_by_id(self, reservation_id: int) -> Reservation:
 		"""ID로 예약 조회"""
 		pass
 

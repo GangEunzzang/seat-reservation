@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from app.episode.domain.episode import Episode
 
@@ -7,7 +6,7 @@ from app.episode.domain.episode import Episode
 class EpisodeQueryUseCase(ABC):
 
 	@abstractmethod
-	async def get_episode_by_id(self, episode_id: int) -> Optional[Episode]:
+	async def get_episode_by_id(self, episode_id: int) -> Episode:
 		"""ID로 에피소드 조회"""
 		pass
 

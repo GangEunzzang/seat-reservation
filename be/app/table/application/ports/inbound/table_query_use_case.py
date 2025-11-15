@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from app.table.domain.table import Table
 
@@ -7,7 +6,7 @@ from app.table.domain.table import Table
 class TableQueryUseCase(ABC):
 
 	@abstractmethod
-	async def get_table_by_id(self, table_id: int) -> Optional[Table]:
+	async def get_table_by_id(self, table_id: int) -> Table:
 		"""ID로 테이블 조회"""
 		pass
 
