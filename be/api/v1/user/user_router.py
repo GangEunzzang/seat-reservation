@@ -12,7 +12,7 @@ from app.user.domain.user_register_request import UserRegisterRequest as DomainU
 router = APIRouter(prefix="/user")
 
 
-@router.post("/users", response_model=ApiResponse[UserResponse], status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ApiResponse[UserResponse], status_code=status.HTTP_201_CREATED)
 async def register_user(
     request: UserRegisterRequest,
     service: UserCommandService = Depends(get_user_command_service)
@@ -30,7 +30,7 @@ async def register_user(
     return ApiResponse.success(UserResponse.model_validate(user), message="사용자 등록 완료")
 
 
-@router.get("/users/{user_id}", response_model=ApiResponse[UserResponse])
+@router.get("/{user_id}", response_model=ApiResponse[UserResponse])
 async def get_user(
     user_id: int,
     service: UserQueryService = Depends(get_user_query_service)
@@ -40,7 +40,7 @@ async def get_user(
     return ApiResponse.success(UserResponse.model_validate(user), message="사용자 조회 성공")
 
 
-@router.get("/users", response_model=ApiResponse[list[UserResponse]])
+@router.get("", response_model=ApiResponse[list[UserResponse]])
 async def list_users(
     service: UserQueryService = Depends(get_user_query_service)
 ):
@@ -50,7 +50,7 @@ async def list_users(
     return ApiResponse.success(user_list, message="사용자 목록 조회 성공")
 
 
-@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(
     user_id: int,
     service: UserCommandService = Depends(get_user_command_service)
