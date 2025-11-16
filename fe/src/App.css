@@ -1,18 +1,18 @@
 .app {
-  min-height: 100vh;
-  background: #fafafa;
+    min-height: 100vh;
+    background: #0f0f0f;
 }
 
 .main-content {
-  margin-left: 260px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  min-height: 100vh;
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-left: 260px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 100vh;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .main-content--sidebar-collapsed {
-  margin-left: 64px;
+    margin-left: 64px;
 }

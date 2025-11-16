@@ -1,0 +1,39 @@
+.episode-selector {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: #444;
+}
+
+.episode-selector select,
+.episode-selector input {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.9rem;
+}
+
+.episode-selector select {
+    min-width: 150px;
+}
+
+.episode-selector input {
+    min-width: 200px;
+}
+
+.episode-selector button {
+    padding: 0.5rem 1rem;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.episode-selector button:hover {
+    background: #45a049;
+}

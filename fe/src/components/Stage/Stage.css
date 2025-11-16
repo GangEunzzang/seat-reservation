@@ -1,0 +1,23 @@
+.stage {
+    background: #2a2a2a;
+    height: 60px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transform: perspective(600px) rotateX(8deg);
+    transform-origin: bottom center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+    border: 1px solid #3d3d3d;
+    margin-bottom: 0.5rem;
+}
+
+.stage-label {
+    color: #525252;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
