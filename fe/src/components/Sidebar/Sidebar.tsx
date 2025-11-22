@@ -17,7 +17,7 @@ interface SidebarProps {
     episodes: Episode[];
     currentEpisodeId: number;
     onEpisodeChange: (id: number) => void;
-    onAddEpisode: (name: string) => void;
+    onAddEpisode: (name: string, year: number, startDate: string, endDate: string) => void;
     onAddTable: () => void;
     isCollapsed: boolean;
     onToggle: () => void;
@@ -37,12 +37,18 @@ export const Sidebar: FC<SidebarProps> = ({
                                               onUploadExcel,
                                           }) => {
     const [newEpisodeName, setNewEpisodeName] = useState('');
+    const [newEpisodeYear, setNewEpisodeYear] = useState(new Date().getFullYear());
+    const [newEpisodeStartDate, setNewEpisodeStartDate] = useState('');
+    const [newEpisodeEndDate, setNewEpisodeEndDate] = useState('');
     const [showAddEpisode, setShowAddEpisode] = useState(false);
 
     const handleAddEpisode = () => {
-        if (newEpisodeName.trim()) {
-            onAddEpisode(newEpisodeName);
+        if (newEpisodeName.trim() && newEpisodeStartDate && newEpisodeEndDate) {
+            onAddEpisode(newEpisodeName, newEpisodeYear, newEpisodeStartDate, newEpisodeEndDate);
             setNewEpisodeName('');
+            setNewEpisodeYear(new Date().getFullYear());
+            setNewEpisodeStartDate('');
+            setNewEpisodeEndDate('');
             setShowAddEpisode(false);
         }
     };
@@ -101,11 +107,28 @@ export const Sidebar: FC<SidebarProps> = ({
                         <div className="sidebar__add-form">
                             <input
                                 type="text"
-                                placeholder="에피소드 이름"
+                                placeholder="에피소드 이름 (예: 2024 연말 총회)"
                                 value={newEpisodeName}
                                 onChange={e => setNewEpisodeName(e.target.value)}
-                                onKeyDown={e => e.key === 'Enter' && handleAddEpisode()}
                                 autoFocus
+                            />
+                            <input
+                                type="number"
+                                placeholder="연도"
+                                value={newEpisodeYear}
+                                onChange={e => setNewEpisodeYear(parseInt(e.target.value) || new Date().getFullYear())}
+                            />
+                            <input
+                                type="date"
+                                placeholder="시작일"
+                                value={newEpisodeStartDate}
+                                onChange={e => setNewEpisodeStartDate(e.target.value)}
+                            />
+                            <input
+                                type="date"
+                                placeholder="종료일"
+                                value={newEpisodeEndDate}
+                                onChange={e => setNewEpisodeEndDate(e.target.value)}
                             />
                             <button onClick={handleAddEpisode}>추가</button>
                         </div>

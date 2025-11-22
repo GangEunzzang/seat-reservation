@@ -54,9 +54,42 @@ export const useEpisodes = () => {
     const zones = currentEpisode?.zones || [];
     const attendees = currentEpisode?.attendees || [];
 
-    const addEpisode = (_name: string) => {
-        // TODO: 백엔드 Episode API 연동 필요
-        console.warn('Episode 생성은 아직 백엔드와 연동되지 않았습니다.');
+    const addEpisode = async (name: string, year: number, startDate: string, endDate: string) => {
+        try {
+            // 백엔드에 Episode 생성 (Zone이 자동으로 생성됨)
+            const newEpisode = await episodeApi.create({
+                name,
+                year,
+                start_date: startDate,
+                end_date: endDate,
+            });
+
+            // 생성된 Episode의 Zone 정보 불러오기
+            const zones = await zoneApi.listByEpisode(newEpisode.id);
+            const zoneInfos: ZoneInfo[] = zones.map(z => ({
+                id: z.code,
+                backendId: z.id,
+                name: z.name,
+            }));
+
+            // Episode 목록에 추가
+            const episodeWithZones: Episode = {
+                id: newEpisode.id,
+                name: newEpisode.name,
+                year: newEpisode.year,
+                startDate: newEpisode.start_date,
+                endDate: newEpisode.end_date,
+                tables: [],
+                zones: zoneInfos,
+                attendees: []
+            };
+
+            setEpisodes(prev => [...prev, episodeWithZones]);
+            setCurrentEpisodeId(newEpisode.id);
+        } catch (error) {
+            console.error('Episode 생성 실패:', error);
+            throw error;
+        }
     };
 
     const addZone = (_name: string) => {
