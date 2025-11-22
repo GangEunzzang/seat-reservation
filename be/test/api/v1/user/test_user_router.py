@@ -18,7 +18,6 @@ async def test_register_user_success(async_client: AsyncClient):
 	assert response.status_code == 201
 	data = response.json()
 	assert data["code"] == "200"
-	assert data["data"]["user_code"] == "TEST001"
 	assert "id" in data["data"]
 
 
@@ -67,8 +66,26 @@ async def test_delete_user_not_found(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_register_user_duplicate_code(async_client: AsyncClient, created_user: dict):
-	duplicate_request = UserFixture.create_request_dict(name="다른이름")
-	response = await async_client.post("/api/v1/user", json=duplicate_request)
-	assert response.status_code == 409
-	assert response.json()["code"] == "USER_CODE_ALREADY_EXISTS"
+async def test_register_users_bulk_success(async_client: AsyncClient):
+	request_data = [
+		UserFixture.create_request_dict(name="홍길동", department="개발팀"),
+		UserFixture.create_request_dict(name="김철수", department="기획팀"),
+		UserFixture.create_request_dict(name="이영희", department="디자인팀")
+	]
+	response = await async_client.post("/api/v1/user/bulk", json=request_data)
+	assert response.status_code == 201
+	data = response.json()
+	assert data["code"] == "200"
+	assert len(data["data"]) == 3
+	assert data["data"][0]["name"] == "홍길동"
+	assert data["data"][1]["name"] == "김철수"
+	assert data["data"][2]["name"] == "이영희"
+
+
+@pytest.mark.asyncio
+async def test_register_users_bulk_empty_list(async_client: AsyncClient):
+	response = await async_client.post("/api/v1/user/bulk", json=[])
+	assert response.status_code == 201
+	data = response.json()
+	assert data["code"] == "200"
+	assert len(data["data"]) == 0

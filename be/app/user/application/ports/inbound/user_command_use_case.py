@@ -12,6 +12,11 @@ class UserCommandUseCase(ABC):
 		pass
 
 	@abstractmethod
+	async def register_bulk(self, requests: list[UserRegisterRequest]) -> list[User]:
+		"""사용자 다건 등록"""
+		pass
+
+	@abstractmethod
 	async def delete(self, user_id: int) -> None:
 		"""사용자 삭제"""
 		pass

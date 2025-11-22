@@ -5,7 +5,6 @@ def test_create_user():
 	"""User 생성 테스트"""
 	# Given & When
 	user = UserFixture.create_user(
-		user_code="U001",
 		name="홍길동",
 		department="개발팀",
 		position="개발자",
@@ -14,7 +13,6 @@ def test_create_user():
 	)
 
 	# Then
-	assert user.user_code == "U001"
 	assert user.name == "홍길동"
 	assert user.department == "개발팀"
 	assert user.position == "개발자"

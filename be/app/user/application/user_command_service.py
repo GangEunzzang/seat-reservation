@@ -12,11 +12,24 @@ class UserCommandService(UserCommandUseCase):
 		self.user_repository = user_repository
 
 	async def register(self, request: UserRegisterRequest) -> User:
-		if await self.user_repository.exists_by_user_code(request.user_code):
-			raise DomainException(ErrorCode.USER_CODE_ALREADY_EXISTS, user_code=request.user_code)
-
 		user = User.create(request)
 		return await self.user_repository.save(user)
+
+	async def register_bulk(self, requests: list[UserRegisterRequest]) -> list[User]:
+		"""
+		사용자 다건 등록
+
+		Note:
+		- 트랜잭션은 HTTP 요청 단위로 보장
+		- 중간에 하나라도 실패하면 전체가 rollback
+		- SQLAlchemy 2.0 제약으로 개별 save 사용
+		"""
+		users = []
+		for request in requests:
+			user = User.create(request)
+			saved_user = await self.user_repository.save(user)
+			users.append(saved_user)
+		return users
 
 	async def delete(self, user_id: int) -> None:
 		user = await self.user_repository.find_by_id(user_id)

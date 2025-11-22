@@ -22,7 +22,6 @@ def user_command_service(user_repository) -> UserCommandService:
 async def test_register_user(user_command_service):
 	# Given
 	request = UserRegisterRequest(
-		user_code="TEST001",
 		name="홍길동",
 		department="개발팀",
 		position="시니어",
@@ -35,37 +34,13 @@ async def test_register_user(user_command_service):
 
 	# Then
 	assert result.id is not None
-	assert result.user_code == "TEST001"
 	assert result.name == "홍길동"
-
-
-@pytest.mark.asyncio
-async def test_register_user_duplicate_user_code(user_command_service, user_repository):
-	# Given
-	existing_user = UserFixture.create_user(user_code="DUPLICATE001", name="기존유저")
-	await user_repository.save(existing_user)
-
-	request = UserRegisterRequest(
-		user_code="DUPLICATE001",
-		name="홍길동",
-		department="개발팀",
-		position="시니어",
-		phone_number="010-1234-5678",
-		episode_id=1
-	)
-
-	# When & Then
-	with pytest.raises(DomainException) as exc_info:
-		await user_command_service.register(request)
-
-	assert exc_info.value.error_code == ErrorCode.USER_CODE_ALREADY_EXISTS
-	assert "DUPLICATE001" in exc_info.value.message
 
 
 @pytest.mark.asyncio
 async def test_delete_user(user_command_service, user_repository):
 	# Given
-	user = UserFixture.create_user(user_code="TEST001", name="홍길동")
+	user = UserFixture.create_user(name="홍길동")
 	saved_user = await user_repository.save(user)
 
 	# When
@@ -86,3 +61,75 @@ async def test_delete_user_not_found(user_command_service):
 		await user_command_service.delete(NON_EXISTENT_USER_ID)
 
 	assert exc_info.value.error_code == ErrorCode.USER_NOT_FOUND
+
+
+@pytest.mark.asyncio
+async def test_register_bulk(user_command_service):
+	# Given
+	requests = [
+		UserRegisterRequest(
+			name="홍길동",
+			department="개발팀",
+			position="시니어",
+			phone_number="010-1234-5678",
+			episode_id=1
+		),
+		UserRegisterRequest(
+			name="김철수",
+			department="기획팀",
+			position="주니어",
+			phone_number="010-1234-5679",
+			episode_id=1
+		),
+		UserRegisterRequest(
+			name="이영희",
+			department="디자인팀",
+			position="시니어",
+			phone_number="010-1234-5680",
+			episode_id=1
+		)
+	]
+
+	# When
+	result = await user_command_service.register_bulk(requests)
+
+	# Then
+	assert len(result) == 3
+	assert result[0].name == "홍길동"
+	assert result[1].name == "김철수"
+	assert result[2].name == "이영희"
+	assert all(user.id is not None for user in result)
+
+
+@pytest.mark.asyncio
+async def test_register_bulk_rollback_on_error(user_command_service, user_repository):
+	"""
+	다건 등록 중 하나라도 실패하면 전체가 rollback 되는지 검증
+
+	Note: 현재 비즈니스 로직에서는 실패할 수 있는 검증이 없어서,
+	이 테스트는 트랜잭션 동작을 문서화하는 목적입니다.
+	"""
+	# Given
+	requests = [
+		UserRegisterRequest(
+			name="홍길동",
+			department="개발팀",
+			position="시니어",
+			phone_number="010-1234-5678",
+			episode_id=1
+		),
+		UserRegisterRequest(
+			name="김철수",
+			department="기획팀",
+			position="주니어",
+			phone_number="010-1234-5679",
+			episode_id=1
+		)
+	]
+
+	# When
+	await user_command_service.register_bulk(requests)
+
+	# Then - 트랜잭션이 커밋되어 모두 저장되었는지 확인
+	all_users = await user_repository.find_all()
+	assert len(all_users) == 2

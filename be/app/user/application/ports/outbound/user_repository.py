@@ -10,11 +10,11 @@ class UserRepository(ABC):
 		pass
 
 	@abstractmethod
-	async def find_by_id(self, user_id: int) -> Optional[User]:
+	async def save_all(self, users: list[User]) -> list[User]:
 		pass
 
 	@abstractmethod
-	async def find_by_user_code(self, user_code: str) -> Optional[User]:
+	async def find_by_id(self, user_id: int) -> Optional[User]:
 		pass
 
 	@abstractmethod
@@ -23,8 +23,4 @@ class UserRepository(ABC):
 
 	@abstractmethod
 	async def delete(self, user_id: int) -> None:
-		pass
-
-	@abstractmethod
-	async def exists_by_user_code(self, user_code: str) -> bool:
 		pass

@@ -10,7 +10,6 @@ class UserFixture:
 
 	@staticmethod
 	def create_user_register_request(
-		user_code: str = "TEST001",
 		name: str = "테스트유저",
 		department: str = "테스트부서",
 		position: str = "테스트직책",
@@ -19,7 +18,6 @@ class UserFixture:
 	) -> UserRegisterRequest:
 		"""UserRegisterRequest 생성"""
 		return UserRegisterRequest(
-			user_code=user_code,
 			name=name,
 			department=department,
 			position=position,
@@ -29,7 +27,6 @@ class UserFixture:
 
 	@staticmethod
 	def create_request_dict(
-		user_code: str = "TEST001",
 		name: str = "테스트유저",
 		department: str = "테스트부서",
 		position: str = "테스트직책",
@@ -38,7 +35,6 @@ class UserFixture:
 	) -> dict:
 		"""API 요청 body dict 생성"""
 		return {
-			"user_code": user_code,
 			"name": name,
 			"department": department,
 			"position": position,
@@ -48,7 +44,6 @@ class UserFixture:
 
 	@staticmethod
 	def create_user(
-		user_code: str = "TEST001",
 		name: str = "테스트유저",
 		department: str = "테스트부서",
 		position: str = "테스트직책",
@@ -57,7 +52,6 @@ class UserFixture:
 	) -> User:
 		"""User 엔티티 생성"""
 		request = UserFixture.create_user_register_request(
-			user_code=user_code,
 			name=name,
 			department=department,
 			position=position,
@@ -72,7 +66,6 @@ class UserFixture:
 		users = []
 		for i in range(1, count + 1):
 			user = UserFixture.create_user(
-				user_code=f"USER{i:03d}",
 				name=f"사용자{i}",
 				department=f"부서{i}",
 				position="직원",
@@ -96,7 +89,6 @@ class UserFixture:
 		for i in range(1, count + 1):
 			user = await UserFixture.create_via_api(
 				client,
-				user_code=f"USER{i:03d}",
 				name=f"사용자{i}",
 				department=f"부서{i}",
 				position="직원",

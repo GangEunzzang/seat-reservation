@@ -12,7 +12,6 @@ class User(Base, Timestamp):
 	__tablename__ = "user"
 
 	id: Mapped[Optional[int]] = mapped_column(Integer, primary_key=True, autoincrement=True)
-	user_code: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
 	name: Mapped[str] = mapped_column(String(100), nullable=False)
 	department: Mapped[str] = mapped_column(String(100), nullable=False)
 	position: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -22,7 +21,6 @@ class User(Base, Timestamp):
 	@classmethod
 	def create(cls, register_request: UserRegisterRequest) -> "User":
 		return cls(
-			user_code=register_request.user_code,
 			name=register_request.name,
 			department=register_request.department,
 			position=register_request.position,

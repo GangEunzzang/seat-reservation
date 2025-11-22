@@ -16,14 +16,5 @@ class UserQueryService(UserQueryUseCase):
 			raise DomainException(ErrorCode.USER_NOT_FOUND)
 		return user
 
-	async def get_user_by_code(self, user_code: str) -> User:
-		user = await self.user_repository.find_by_user_code(user_code)
-		if not user:
-			raise DomainException(ErrorCode.USER_NOT_FOUND)
-		return user
-
 	async def get_user_list_all(self) -> list[User]:
 		return await self.user_repository.find_all()
-
-	async def exists_by_user_code(self, user_code: str) -> bool:
-		return await self.user_repository.exists_by_user_code(user_code)

@@ -19,7 +19,6 @@ async def register_user(
 ):
     """사용자 등록"""
     domain_request = DomainUserRegisterRequest(
-        user_code=request.user_code,
         name=request.name,
         department=request.department,
         position=request.position,
@@ -28,6 +27,27 @@ async def register_user(
     )
     user = await service.register(domain_request)
     return ApiResponse.success(UserResponse.model_validate(user), message="사용자 등록 완료")
+
+
+@router.post("/bulk", response_model=ApiResponse[list[UserResponse]], status_code=status.HTTP_201_CREATED)
+async def register_users_bulk(
+    requests: list[UserRegisterRequest],
+    service: UserCommandService = Depends(get_user_command_service)
+):
+    """사용자 다건 등록"""
+    domain_requests = [
+        DomainUserRegisterRequest(
+            name=req.name,
+            department=req.department,
+            position=req.position,
+            phone_number=req.phone_number,
+            episode_id=req.episode_id
+        )
+        for req in requests
+    ]
+    users = await service.register_bulk(domain_requests)
+    user_list = [UserResponse.model_validate(user) for user in users]
+    return ApiResponse.success(user_list, message=f"{len(users)}명의 사용자 등록 완료")
 
 
 @router.get("/{user_id}", response_model=ApiResponse[UserResponse])
