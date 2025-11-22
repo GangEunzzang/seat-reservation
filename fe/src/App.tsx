@@ -18,6 +18,7 @@ function App() {
         tables,
         zones,
         attendees,
+        isLoading,
         addEpisode,
         addZone,
         deleteZone,
@@ -38,6 +39,14 @@ function App() {
     const [showReservationPanel, setShowReservationPanel] = useState(false);
     const [showExcelUpload, setShowExcelUpload] = useState(false);
     const [currentZoneId, setCurrentZoneId] = useState<string | null>(null);
+
+    if (isLoading) {
+        return <div className="app">Loading...</div>;
+    }
+
+    if (!currentEpisodeId) {
+        return <div className="app">No episodes found</div>;
+    }
 
     const selectedTable = tables.find(t => t.id === selectedTableId);
 

@@ -16,7 +16,8 @@ export interface Seat {
 }
 
 export interface ZoneInfo {
-    id: string;                // UI용 Zone ID (A, B, C, D)
+    id: string;                // UI용 Zone ID (코드: A, B, C, D)
+    backendId: number;         // 백엔드 Zone ID
     name: string;
 }
 

@@ -1,29 +1,53 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import type {Episode, Table, Seat, ZoneInfo, Attendee} from '../types';
-import {tableApi, seatApi, reservationApi} from '../api';
-
-const defaultZones: ZoneInfo[] = [
-    {id: 'A', name: 'A'},
-    {id: 'B', name: 'B'},
-    {id: 'C', name: 'C'},
-    {id: 'D', name: 'D'},
-];
+import {tableApi, seatApi, reservationApi, episodeApi, zoneApi} from '../api';
 
 export const useEpisodes = () => {
-    // TODO: 백엔드에서 Episode 조회하여 초기화
-    const [episodes, setEpisodes] = useState<Episode[]>([
-        {
-            id: 1,
-            name: '2024 연말 총회',
-            year: 2024,
-            startDate: '2024-12-01',
-            endDate: '2024-12-31',
-            tables: [],
-            zones: defaultZones,
-            attendees: []
-        }
-    ]);
-    const [currentEpisodeId, setCurrentEpisodeId] = useState(1);
+    const [episodes, setEpisodes] = useState<Episode[]>([]);
+    const [currentEpisodeId, setCurrentEpisodeId] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // 백엔드에서 Episode와 Zone 정보 불러오기
+    useEffect(() => {
+        const loadEpisodes = async () => {
+            try {
+                const episodeList = await episodeApi.list();
+
+                const episodesWithZones = await Promise.all(
+                    episodeList.map(async (ep) => {
+                        const zones = await zoneApi.listByEpisode(ep.id);
+                        const zoneInfos: ZoneInfo[] = zones.map(z => ({
+                            id: z.code,           // 'A', 'B', 'C', 'D'
+                            backendId: z.id,      // 1, 2, 3, 4
+                            name: z.name,         // 'A구역', 'B구역', ...
+                        }));
+
+                        return {
+                            id: ep.id,
+                            name: ep.name,
+                            year: ep.year,
+                            startDate: ep.start_date,
+                            endDate: ep.end_date,
+                            tables: [],
+                            zones: zoneInfos,
+                            attendees: []
+                        };
+                    })
+                );
+
+                setEpisodes(episodesWithZones);
+                if (episodesWithZones.length > 0) {
+                    setCurrentEpisodeId(episodesWithZones[0].id);
+                }
+            } catch (error) {
+                console.error('Episode 로딩 실패:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadEpisodes();
+    }, []);
 
     const currentEpisode = episodes.find(ep => ep.id === currentEpisodeId);
     const tables = currentEpisode?.tables || [];
@@ -35,29 +59,14 @@ export const useEpisodes = () => {
         console.warn('Episode 생성은 아직 백엔드와 연동되지 않았습니다.');
     };
 
-    const addZone = (name: string) => {
-        if (!name.trim()) return;
-        const newZone: ZoneInfo = {
-            id: Date.now().toString(),
-            name: name.toUpperCase(),
-        };
-        setEpisodes(prev => prev.map(ep =>
-            ep.id === currentEpisodeId
-                ? {...ep, zones: [...ep.zones, newZone]}
-                : ep
-        ));
+    const addZone = (_name: string) => {
+        // TODO: 백엔드 Zone API 연동 필요
+        console.warn('Zone 생성은 아직 백엔드와 연동되지 않았습니다. Episode 생성 시 기본 Zone(A,B,C,D)이 자동 생성됩니다.');
     };
 
-    const deleteZone = (zoneId: string) => {
-        setEpisodes(prev => prev.map(ep =>
-            ep.id === currentEpisodeId
-                ? {
-                    ...ep,
-                    zones: ep.zones.filter(z => z.id !== zoneId),
-                    tables: ep.tables.filter(t => t.zoneId !== zoneId)
-                }
-                : ep
-        ));
+    const deleteZone = (_zoneId: string) => {
+        // TODO: 백엔드 Zone API 연동 필요
+        console.warn('Zone 삭제는 아직 백엔드와 연동되지 않았습니다.');
     };
 
     const addTable = async (zoneId: string = 'A') => {
@@ -73,20 +82,21 @@ export const useEpisodes = () => {
             const zoneName = zone?.name || zoneId;
             const zoneTableCount = tables.filter(t => t.zoneId === zoneId).length;
 
+            // Zone이 없으면 에러
+            if (!zone) {
+                console.error(`Zone ${zoneId}를 찾을 수 없습니다.`);
+                return;
+            }
+
             // 테이블 초기 위치 계산
             const x = 100 + (zoneTableCount % 5) * 180;
             const y = 50 + Math.floor(zoneTableCount / 5) * 180;
             const name = `${zoneName}-${zoneTableCount + 1}`;
 
-            // Zone의 백엔드 ID를 찾아야 함 (현재는 zone.id가 'A', 'B', 'C', 'D'이므로 임시로 1,2,3,4 사용)
-            // TODO: Zone API로 zone_id 조회 필요
-            const zoneIdMap: Record<string, number> = {'A': 1, 'B': 2, 'C': 3, 'D': 4};
-            const backendZoneId = zoneIdMap[zoneId] || 1;
-
             // 백엔드에 테이블 생성 (zone_id, x, y, name 포함)
             const tableResponse = await tableApi.create({
                 episode_id: episode.id,
-                zone_id: backendZoneId,
+                zone_id: zone.backendId,
                 x,
                 y,
                 name,
@@ -268,6 +278,7 @@ export const useEpisodes = () => {
         tables,
         zones,
         attendees,
+        isLoading,
         addEpisode,
         addZone,
         deleteZone,
