@@ -54,6 +54,7 @@ export const Sidebar: FC<SidebarProps> = ({
     };
 
     return (
+        <>
         <aside className={`sidebar ${isCollapsed ? 'sidebar--collapsed' : ''}`}>
             <div className="sidebar__header">
                 <div className="sidebar__logo">
@@ -103,36 +104,6 @@ export const Sidebar: FC<SidebarProps> = ({
                         </li>
                     </ul>
 
-                    {!isCollapsed && showAddEpisode && (
-                        <div className="sidebar__add-form">
-                            <input
-                                type="text"
-                                placeholder="에피소드 이름 (예: 2024 연말 총회)"
-                                value={newEpisodeName}
-                                onChange={e => setNewEpisodeName(e.target.value)}
-                                autoFocus
-                            />
-                            <input
-                                type="number"
-                                placeholder="연도"
-                                value={newEpisodeYear}
-                                onChange={e => setNewEpisodeYear(parseInt(e.target.value) || new Date().getFullYear())}
-                            />
-                            <input
-                                type="date"
-                                placeholder="시작일"
-                                value={newEpisodeStartDate}
-                                onChange={e => setNewEpisodeStartDate(e.target.value)}
-                            />
-                            <input
-                                type="date"
-                                placeholder="종료일"
-                                value={newEpisodeEndDate}
-                                onChange={e => setNewEpisodeEndDate(e.target.value)}
-                            />
-                            <button onClick={handleAddEpisode}>추가</button>
-                        </div>
-                    )}
                 </div>
 
                 <div className="sidebar__section">
@@ -173,5 +144,69 @@ export const Sidebar: FC<SidebarProps> = ({
                 </div>
             </nav>
         </aside>
+
+        {showAddEpisode && (
+            <div className="modal-overlay" onClick={() => setShowAddEpisode(false)}>
+                <div className="modal episode-modal" onClick={e => e.stopPropagation()}>
+                    <div className="modal__header">
+                        <h3>새 에피소드 추가</h3>
+                        <button className="modal__close" onClick={() => setShowAddEpisode(false)}>✕</button>
+                    </div>
+                    <div className="modal__content">
+                        <div>
+                            <label htmlFor="episode-name">에피소드 이름</label>
+                            <input
+                                id="episode-name"
+                                type="text"
+                                placeholder="예: 2025 신년회"
+                                value={newEpisodeName}
+                                onChange={e => setNewEpisodeName(e.target.value)}
+                                autoFocus
+                            />
+                        </div>
+                        <div className="episode-modal__row">
+                            <div className="episode-modal__col">
+                                <label htmlFor="episode-year">연도</label>
+                                <input
+                                    id="episode-year"
+                                    type="number"
+                                    placeholder={new Date().getFullYear().toString()}
+                                    value={newEpisodeYear}
+                                    onChange={e => setNewEpisodeYear(parseInt(e.target.value) || new Date().getFullYear())}
+                                />
+                            </div>
+                        </div>
+                        <div className="episode-modal__row">
+                            <div className="episode-modal__col">
+                                <label htmlFor="episode-start">시작일</label>
+                                <input
+                                    id="episode-start"
+                                    type="date"
+                                    value={newEpisodeStartDate}
+                                    onChange={e => setNewEpisodeStartDate(e.target.value)}
+                                />
+                            </div>
+                            <div className="episode-modal__col">
+                                <label htmlFor="episode-end">종료일</label>
+                                <input
+                                    id="episode-end"
+                                    type="date"
+                                    value={newEpisodeEndDate}
+                                    onChange={e => setNewEpisodeEndDate(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <button
+                            className="modal__reserve-btn"
+                            onClick={handleAddEpisode}
+                            disabled={!newEpisodeName.trim() || !newEpisodeStartDate || !newEpisodeEndDate}
+                        >
+                            추가하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 };
