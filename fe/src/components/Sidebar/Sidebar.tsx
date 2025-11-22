@@ -8,7 +8,8 @@ import {
     Plus,
     Table2,
     ChevronRight,
-    ClipboardList
+    ClipboardList,
+    Upload
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -21,6 +22,7 @@ interface SidebarProps {
     isCollapsed: boolean;
     onToggle: () => void;
     onShowReservations: () => void;
+    onUploadExcel: () => void;
 }
 
 export const Sidebar: FC<SidebarProps> = ({
@@ -32,6 +34,7 @@ export const Sidebar: FC<SidebarProps> = ({
                                               isCollapsed,
                                               onToggle,
                                               onShowReservations,
+                                              onUploadExcel,
                                           }) => {
     const [newEpisodeName, setNewEpisodeName] = useState('');
     const [showAddEpisode, setShowAddEpisode] = useState(false);
@@ -121,6 +124,16 @@ export const Sidebar: FC<SidebarProps> = ({
                             >
                                 <Table2 size={18}/>
                                 {!isCollapsed && <span className="sidebar__menu-text">테이블 추가</span>}
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                className="sidebar__menu-item sidebar__menu-item--tool"
+                                onClick={onUploadExcel}
+                                title={isCollapsed ? '참석자 업로드' : undefined}
+                            >
+                                <Upload size={18}/>
+                                {!isCollapsed && <span className="sidebar__menu-text">참석자 업로드</span>}
                             </button>
                         </li>
                         <li>

@@ -94,6 +94,7 @@
     transition: all 0.15s ease;
     text-align: left;
     position: relative;
+    margin-bottom: 0.7rem;
 }
 
 .sidebar--collapsed .sidebar__menu-item {

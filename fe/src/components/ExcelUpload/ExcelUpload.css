@@ -1,0 +1,239 @@
+.excel-upload-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.excel-upload-modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.excel-upload-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.excel-upload-modal__header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.excel-upload-modal__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.excel-upload-modal__close:hover {
+    background: #f3f4f6;
+}
+
+.excel-upload-modal__body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.excel-upload-modal__info {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.excel-upload-modal__info p {
+    margin: 0 0 8px 0;
+    font-weight: 500;
+}
+
+.excel-upload-modal__info ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.excel-upload-modal__info li {
+    margin: 4px 0;
+}
+
+.excel-upload-modal__button {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.excel-upload-modal__button:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.excel-upload-modal__button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.excel-upload-modal__error {
+    margin-top: 16px;
+    padding: 12px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    white-space: pre-wrap;
+    font-size: 14px;
+}
+
+.excel-upload-modal__preview {
+    margin-top: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.excel-upload-modal__preview h3 {
+    margin: 0;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.excel-upload-modal__preview-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.excel-upload-modal__preview-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.excel-upload-modal__preview-item:last-child {
+    border-bottom: none;
+}
+
+.excel-upload-modal__preview-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.excel-upload-modal__preview-item .branch {
+    flex-shrink: 0;
+    padding: 4px 8px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.excel-upload-modal__preview-item .name {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.excel-upload-modal__preview-item .position {
+    font-size: 13px;
+    color: #6b7280;
+    padding: 2px 8px;
+    background: #f3f4f6;
+    border-radius: 4px;
+}
+
+.excel-upload-modal__preview-item .phone {
+    font-size: 13px;
+    color: #6b7280;
+    font-family: monospace;
+}
+
+.excel-upload-modal__preview-more {
+    padding: 10px 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 13px;
+    background: #f9fafb;
+}
+
+.excel-upload-modal__footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.excel-upload-modal__footer button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #d1d5db;
+    background: white;
+}
+
+.excel-upload-modal__footer button:hover {
+    background: #f3f4f6;
+}
+
+.excel-upload-modal__footer-submit {
+    background: #10b981 !important;
+    color: white !important;
+    border-color: #10b981 !important;
+}
+
+.excel-upload-modal__footer-submit:hover:not(:disabled) {
+    background: #059669 !important;
+}
+
+.excel-upload-modal__footer-submit:disabled {
+    background: #9ca3af !important;
+    border-color: #9ca3af !important;
+    cursor: not-allowed;
+}

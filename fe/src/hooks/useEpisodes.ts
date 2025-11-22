@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import type {Episode, Table, Seat, ZoneInfo} from '../types';
+import type {Episode, Table, Seat, ZoneInfo, Attendee} from '../types';
 
 const createSeats = (tableId: string, count: number): Seat[] => {
     return Array.from({length: count}, (_, i) => ({
@@ -19,13 +19,14 @@ const defaultZones: ZoneInfo[] = [
 
 export const useEpisodes = () => {
     const [episodes, setEpisodes] = useState<Episode[]>([
-        {id: '1', name: '2024 연말 총회', tables: [], zones: defaultZones}
+        {id: '1', name: '2024 연말 총회', tables: [], zones: defaultZones, attendees: []}
     ]);
     const [currentEpisodeId, setCurrentEpisodeId] = useState('1');
 
     const currentEpisode = episodes.find(ep => ep.id === currentEpisodeId);
     const tables = currentEpisode?.tables || [];
     const zones = currentEpisode?.zones || [];
+    const attendees = currentEpisode?.attendees || [];
 
     const addEpisode = (name: string) => {
         if (!name.trim()) return;
@@ -33,7 +34,8 @@ export const useEpisodes = () => {
             id: Date.now().toString(),
             name,
             tables: [],
-            zones: defaultZones
+            zones: defaultZones,
+            attendees: []
         };
         setEpisodes(prev => [...prev, newEpisode]);
         setCurrentEpisodeId(newEpisode.id);
@@ -123,7 +125,7 @@ export const useEpisodes = () => {
         ));
     };
 
-    const reserveSeat = (tableId: string, seatId: string, reservedBy: string) => {
+    const reserveSeat = (tableId: string, seatId: string, attendeeId: string) => {
         setEpisodes(prev => prev.map(ep =>
             ep.id === currentEpisodeId
                 ? {
@@ -134,7 +136,7 @@ export const useEpisodes = () => {
                             ...t,
                             seats: t.seats.map(s =>
                                 s.id === seatId
-                                    ? {...s, isReserved: true, reservedBy}
+                                    ? {...s, isReserved: true, attendeeId}
                                     : s
                             )
                         };
@@ -155,7 +157,7 @@ export const useEpisodes = () => {
                             ...t,
                             seats: t.seats.map(s =>
                                 s.id === seatId
-                                    ? {...s, isReserved: false, reservedBy: undefined}
+                                    ? {...s, isReserved: false, attendeeId: undefined}
                                     : s
                             )
                         };
@@ -165,6 +167,27 @@ export const useEpisodes = () => {
         ));
     };
 
+    const addAttendees = (newAttendees: Attendee[]) => {
+        setEpisodes(prev => prev.map(ep =>
+            ep.id === currentEpisodeId
+                ? {...ep, attendees: [...ep.attendees, ...newAttendees]}
+                : ep
+        ));
+    };
+
+    const getAttendeeById = (attendeeId: string) => {
+        return attendees.find(a => a.id === attendeeId);
+    };
+
+    const getAvailableAttendees = () => {
+        const reservedAttendeeIds = new Set(
+            tables.flatMap(t => t.seats)
+                .filter(s => s.isReserved && s.attendeeId)
+                .map(s => s.attendeeId!)
+        );
+        return attendees.filter(a => !reservedAttendeeIds.has(a.id));
+    };
+
     return {
         episodes,
         currentEpisodeId,
@@ -172,6 +195,7 @@ export const useEpisodes = () => {
         currentEpisode,
         tables,
         zones,
+        attendees,
         addEpisode,
         addZone,
         deleteZone,
@@ -181,5 +205,8 @@ export const useEpisodes = () => {
         deleteTable,
         reserveSeat,
         cancelReservation,
+        addAttendees,
+        getAttendeeById,
+        getAvailableAttendees,
     };
 };

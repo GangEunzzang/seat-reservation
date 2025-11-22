@@ -1,9 +1,17 @@
+export interface Attendee {
+    id: string;
+    branchName: string;
+    name: string;
+    position: string;
+    phoneNumber: string;
+}
+
 export interface Seat {
     id: string;
     tableId: string;
     seatNumber: number;
     isReserved: boolean;
-    reservedBy?: string;
+    attendeeId?: string;
 }
 
 export interface ZoneInfo {
@@ -26,4 +34,5 @@ export interface Episode {
     name: string;
     tables: Table[];
     zones: ZoneInfo[];
+    attendees: Attendee[];
 }
