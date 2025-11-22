@@ -2,7 +2,7 @@ import {useRef} from 'react';
 import type {FC} from 'react';
 import Draggable from 'react-draggable';
 import type {DraggableData, DraggableEvent} from 'react-draggable';
-import type {Table as TableType, Seat} from '../../types';
+import type {Table as TableType, Seat, Attendee} from '../../types';
 import './Table.css';
 
 interface TableProps {
@@ -11,6 +11,7 @@ interface TableProps {
     onSelect: () => void;
     onDragStop: (x: number, y: number) => void;
     onSeatClick: (seat: Seat) => void;
+    getAttendeeById?: (id: string) => Attendee | undefined;
 }
 
 export const Table: FC<TableProps> = ({
@@ -19,6 +20,7 @@ export const Table: FC<TableProps> = ({
                                           onSelect,
                                           onDragStop,
                                           onSeatClick,
+                                          getAttendeeById,
                                       }) => {
     const nodeRef = useRef<HTMLDivElement>(null);
 
@@ -52,6 +54,14 @@ export const Table: FC<TableProps> = ({
                     const x = Math.cos(angle) * seatDistance;
                     const y = Math.sin(angle) * seatDistance;
 
+                    let tooltipText = `좌석 ${seat.seatNumber}`;
+                    if (seat.isReserved && seat.attendeeId && getAttendeeById) {
+                        const attendee = getAttendeeById(seat.attendeeId);
+                        if (attendee) {
+                            tooltipText = `${attendee.branchName} - ${attendee.name} (${attendee.position})`;
+                        }
+                    }
+
                     return (
                         <div
                             key={seat.id}
@@ -64,7 +74,7 @@ export const Table: FC<TableProps> = ({
                                 e.stopPropagation();
                                 onSeatClick(seat);
                             }}
-                            title={seat.isReserved ? `${seat.reservedBy}` : `좌석 ${seat.seatNumber}`}
+                            title={tooltipText}
                         >
                             {seat.seatNumber}
                         </div>

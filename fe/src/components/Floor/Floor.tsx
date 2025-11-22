@@ -1,7 +1,7 @@
 import type {FC} from 'react';
 import {ArrowLeft, Plus, Trash2} from 'lucide-react';
 import {useState} from 'react';
-import type {Table as TableType, Seat, ZoneInfo} from '../../types';
+import type {Table as TableType, Seat, ZoneInfo, Attendee} from '../../types';
 import {Table} from './Table';
 import './Floor.css';
 
@@ -16,6 +16,7 @@ interface FloorProps {
     onZoneChange: (zoneId: string | null) => void;
     onAddZone: (name: string) => void;
     onDeleteZone: (zoneId: string) => void;
+    getAttendeeById?: (id: string) => Attendee | undefined;
 }
 
 export const Floor: FC<FloorProps> = ({
@@ -29,6 +30,7 @@ export const Floor: FC<FloorProps> = ({
                                           onZoneChange,
                                           onAddZone,
                                           onDeleteZone,
+                                          getAttendeeById,
                                       }) => {
     const [showAddZone, setShowAddZone] = useState(false);
     const [newZoneName, setNewZoneName] = useState('');
@@ -170,6 +172,7 @@ export const Floor: FC<FloorProps> = ({
                         onSelect={() => onSelectTable(table.id)}
                         onDragStop={(x, y) => onTableDragStop(table.id, x, y)}
                         onSeatClick={onSeatClick}
+                        getAttendeeById={getAttendeeById}
                     />
                 ))}
             </div>

@@ -7,6 +7,7 @@ import {Floor} from './components/Floor';
 import {TableSettings} from './components/TableSettings';
 import {ReservationModal} from './components/ReservationModal';
 import {ReservationPanel} from './components/ReservationPanel';
+import {ExcelUpload} from './components/ExcelUpload';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         setCurrentEpisodeId,
         tables,
         zones,
+        attendees,
         addEpisode,
         addZone,
         deleteZone,
@@ -25,12 +27,16 @@ function App() {
         deleteTable,
         reserveSeat,
         cancelReservation,
+        addAttendees,
+        getAttendeeById,
+        getAvailableAttendees,
     } = useEpisodes();
 
     const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [showReservationPanel, setShowReservationPanel] = useState(false);
+    const [showExcelUpload, setShowExcelUpload] = useState(false);
     const [currentZoneId, setCurrentZoneId] = useState<string | null>(null);
 
     const selectedTable = tables.find(t => t.id === selectedTableId);
@@ -46,11 +52,16 @@ function App() {
         setSelectedSeat(seat);
     };
 
-    const handleReserveSeat = (name: string) => {
+    const handleReserveSeat = (attendeeId: string) => {
         if (selectedSeat) {
-            reserveSeat(selectedSeat.tableId, selectedSeat.id, name);
+            reserveSeat(selectedSeat.tableId, selectedSeat.id, attendeeId);
             setSelectedSeat(null);
         }
+    };
+
+    const handleUploadSuccess = () => {
+        // TODO: 백엔드에서 참석자 목록을 다시 가져오기
+        setShowExcelUpload(false);
     };
 
     const handleCancelReservation = () => {
@@ -71,6 +82,7 @@ function App() {
                 isCollapsed={sidebarCollapsed}
                 onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
                 onShowReservations={() => setShowReservationPanel(true)}
+                onUploadExcel={() => setShowExcelUpload(true)}
             />
 
             <main className={`main-content ${sidebarCollapsed ? 'main-content--sidebar-collapsed' : ''}`}>
@@ -86,6 +98,7 @@ function App() {
                     onZoneChange={setCurrentZoneId}
                     onAddZone={addZone}
                     onDeleteZone={deleteZone}
+                    getAttendeeById={getAttendeeById}
                 />
             </main>
 
@@ -101,6 +114,9 @@ function App() {
             {selectedSeat && (
                 <ReservationModal
                     seat={selectedSeat}
+                    attendees={attendees}
+                    availableAttendees={getAvailableAttendees()}
+                    getAttendeeById={getAttendeeById}
                     onReserve={handleReserveSeat}
                     onCancel={handleCancelReservation}
                     onClose={() => setSelectedSeat(null)}
@@ -111,6 +127,14 @@ function App() {
                 <ReservationPanel
                     tables={tables}
                     onClose={() => setShowReservationPanel(false)}
+                />
+            )}
+
+            {showExcelUpload && currentEpisodeId && (
+                <ExcelUpload
+                    episodeId={parseInt(currentEpisodeId)}
+                    onUploadSuccess={handleUploadSuccess}
+                    onClose={() => setShowExcelUpload(false)}
                 />
             )}
         </div>
