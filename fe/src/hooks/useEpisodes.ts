@@ -30,7 +30,7 @@ export const useEpisodes = () => {
     const zones = currentEpisode?.zones || [];
     const attendees = currentEpisode?.attendees || [];
 
-    const addEpisode = (name: string) => {
+    const addEpisode = (_name: string) => {
         // TODO: 백엔드 Episode API 연동 필요
         console.warn('Episode 생성은 아직 백엔드와 연동되지 않았습니다.');
     };
@@ -68,13 +68,29 @@ export const useEpisodes = () => {
         }
 
         try {
-            // 백엔드에 테이블 생성
-            const tableResponse = await tableApi.create({episode_id: episode.id});
-
             const seatCount = 8;
             const zone = zones.find(z => z.id === zoneId);
             const zoneName = zone?.name || zoneId;
             const zoneTableCount = tables.filter(t => t.zoneId === zoneId).length;
+
+            // 테이블 초기 위치 계산
+            const x = 100 + (zoneTableCount % 5) * 180;
+            const y = 50 + Math.floor(zoneTableCount / 5) * 180;
+            const name = `${zoneName}-${zoneTableCount + 1}`;
+
+            // Zone의 백엔드 ID를 찾아야 함 (현재는 zone.id가 'A', 'B', 'C', 'D'이므로 임시로 1,2,3,4 사용)
+            // TODO: Zone API로 zone_id 조회 필요
+            const zoneIdMap: Record<string, number> = {'A': 1, 'B': 2, 'C': 3, 'D': 4};
+            const backendZoneId = zoneIdMap[zoneId] || 1;
+
+            // 백엔드에 테이블 생성 (zone_id, x, y, name 포함)
+            const tableResponse = await tableApi.create({
+                episode_id: episode.id,
+                zone_id: backendZoneId,
+                x,
+                y,
+                name,
+            });
 
             // 백엔드에 좌석들 생성
             const seatPromises = Array.from({length: seatCount}, (_, i) =>
@@ -95,10 +111,10 @@ export const useEpisodes = () => {
 
             const newTable: Table = {
                 id: tableResponse.id,
-                x: 100 + (zoneTableCount % 5) * 180,
-                y: 50 + Math.floor(zoneTableCount / 5) * 180,
+                x: tableResponse.x,
+                y: tableResponse.y,
                 seatCount,
-                name: `${zoneName}-${zoneTableCount + 1}`,
+                name: tableResponse.name,
                 seats,
                 zoneId,
             };
@@ -114,18 +130,27 @@ export const useEpisodes = () => {
         }
     };
 
-    const updateTablePosition = (id: number, x: number, y: number) => {
-        setEpisodes(prev => prev.map(ep =>
-            ep.id === currentEpisodeId
-                ? {
-                    ...ep,
-                    tables: ep.tables.map(t => t.id === id ? {...t, x, y} : t)
-                }
-                : ep
-        ));
+    const updateTablePosition = async (id: number, x: number, y: number) => {
+        try {
+            // 백엔드에 테이블 위치 업데이트
+            await tableApi.updatePosition(id, {x, y});
+
+            // 프론트엔드 상태 업데이트
+            setEpisodes(prev => prev.map(ep =>
+                ep.id === currentEpisodeId
+                    ? {
+                        ...ep,
+                        tables: ep.tables.map(t => t.id === id ? {...t, x, y} : t)
+                    }
+                    : ep
+            ));
+        } catch (error) {
+            console.error('테이블 위치 업데이트 실패:', error);
+            throw error;
+        }
     };
 
-    const updateTableSeatCount = async (id: number, seatCount: number) => {
+    const updateTableSeatCount = async (_id: number, _seatCount: number) => {
         // TODO: 좌석 수 변경은 복잡함 (기존 좌석 삭제, 새 좌석 생성)
         console.warn('좌석 수 변경은 아직 구현되지 않았습니다.');
     };

@@ -1,22 +1,26 @@
 import type {FC} from 'react';
 import {X, User} from 'lucide-react';
-import type {Table} from '../../types';
+import type {Table, Attendee} from '../../types';
 import './ReservationPanel.css';
 
 interface ReservationPanelProps {
     tables: Table[];
+    getAttendeeById: (id: number) => Attendee | undefined;
     onClose: () => void;
 }
 
-export const ReservationPanel: FC<ReservationPanelProps> = ({tables, onClose}) => {
+export const ReservationPanel: FC<ReservationPanelProps> = ({tables, getAttendeeById, onClose}) => {
     const reservations = tables.flatMap(table =>
         table.seats
-            .filter(seat => seat.isReserved)
-            .map(seat => ({
-                tableName: table.name,
-                seatNumber: seat.seatNumber,
-                reservedBy: seat.reservedBy || '',
-            }))
+            .filter(seat => seat.isReserved && seat.attendeeId)
+            .map(seat => {
+                const attendee = getAttendeeById(seat.attendeeId!);
+                return {
+                    tableName: table.name,
+                    seatNumber: seat.seatNumber,
+                    reservedBy: attendee ? `${attendee.branchName} - ${attendee.name}` : '알 수 없음',
+                };
+            })
     );
 
     return (

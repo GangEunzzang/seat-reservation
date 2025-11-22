@@ -8,9 +8,9 @@ interface ReservationModalProps {
     seat: Seat;
     attendees: Attendee[];
     availableAttendees: Attendee[];
-    getAttendeeById: (id: string) => Attendee | undefined;
-    onReserve: (attendeeId: string) => void;
-    onCancel: () => void;
+    getAttendeeById: (id: number) => Attendee | undefined;
+    onReserve: (attendeeId: number, password: string) => void;
+    onCancel: (password: string) => void;
     onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ export const ReservationModal: FC<ReservationModalProps> = ({
                                                                 onCancel,
                                                                 onClose,
                                                             }) => {
-    const [selectedAttendeeId, setSelectedAttendeeId] = useState('');
+    const [selectedAttendeeId, setSelectedAttendeeId] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [password, setPassword] = useState('');
     const [showResults, setShowResults] = useState(false);
@@ -73,15 +73,17 @@ export const ReservationModal: FC<ReservationModalProps> = ({
     };
 
     const handleConfirmReserve = () => {
-        if (selectedAttendeeId) {
-            onReserve(selectedAttendeeId);
+        if (selectedAttendeeId && password) {
+            onReserve(selectedAttendeeId, password);
             setShowConfirm(false);
         }
     };
 
     const handleConfirmCancel = () => {
-        onCancel();
-        setShowConfirm(false);
+        if (password) {
+            onCancel(password);
+            setShowConfirm(false);
+        }
     };
 
     const handleSelectAttendee = (attendee: Attendee) => {
@@ -223,7 +225,7 @@ export const ReservationModal: FC<ReservationModalProps> = ({
                                             setSearchQuery(e.target.value);
                                             setShowResults(true);
                                             if (!e.target.value.trim()) {
-                                                setSelectedAttendeeId('');
+                                                setSelectedAttendeeId(null);
                                             }
                                         }}
                                         onFocus={() => setShowResults(true)}
@@ -245,7 +247,7 @@ export const ReservationModal: FC<ReservationModalProps> = ({
                                             {filteredAttendees.map((attendee, index) => (
                                                 <button
                                                     key={attendee.id}
-                                                    ref={el => resultRefs.current[index] = el}
+                                                    ref={el => { resultRefs.current[index] = el; }}
                                                     type="button"
                                                     className={`modal__search-result-item ${index === focusedIndex ? 'modal__search-result-item--focused' : ''}`}
                                                     onClick={() => handleSelectAttendee(attendee)}

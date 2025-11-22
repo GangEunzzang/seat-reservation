@@ -8,15 +8,15 @@ import './Floor.css';
 interface FloorProps {
     tables: TableType[];
     zones: ZoneInfo[];
-    selectedTableId: string | null;
-    onSelectTable: (id: string) => void;
-    onTableDragStop: (id: string, x: number, y: number) => void;
+    selectedTableId: number | null;
+    onSelectTable: (id: number) => void;
+    onTableDragStop: (id: number, x: number, y: number) => void;
     onSeatClick: (seat: Seat) => void;
     currentZoneId: string | null;
     onZoneChange: (zoneId: string | null) => void;
     onAddZone: (name: string) => void;
     onDeleteZone: (zoneId: string) => void;
-    getAttendeeById?: (id: string) => Attendee | undefined;
+    getAttendeeById?: (id: number) => Attendee | undefined;
 }
 
 export const Floor: FC<FloorProps> = ({

@@ -32,7 +32,7 @@ function App() {
         getAvailableAttendees,
     } = useEpisodes();
 
-    const [selectedTableId, setSelectedTableId] = useState<string | null>(null);
+    const [selectedTableId, setSelectedTableId] = useState<number | null>(null);
     const [selectedSeat, setSelectedSeat] = useState<Seat | null>(null);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [showReservationPanel, setShowReservationPanel] = useState(false);
@@ -41,9 +41,9 @@ function App() {
 
     const selectedTable = tables.find(t => t.id === selectedTableId);
 
-    const handleDeleteTable = () => {
+    const handleDeleteTable = async () => {
         if (selectedTableId) {
-            deleteTable(selectedTableId);
+            await deleteTable(selectedTableId);
             setSelectedTableId(null);
         }
     };
@@ -52,9 +52,9 @@ function App() {
         setSelectedSeat(seat);
     };
 
-    const handleReserveSeat = (attendeeId: string) => {
+    const handleReserveSeat = async (attendeeId: number, password: string) => {
         if (selectedSeat) {
-            reserveSeat(selectedSeat.tableId, selectedSeat.id, attendeeId);
+            await reserveSeat(selectedSeat.id, attendeeId, password);
             setSelectedSeat(null);
         }
     };
@@ -64,9 +64,9 @@ function App() {
         setShowExcelUpload(false);
     };
 
-    const handleCancelReservation = () => {
-        if (selectedSeat) {
-            cancelReservation(selectedSeat.tableId, selectedSeat.id);
+    const handleCancelReservation = async (password: string) => {
+        if (selectedSeat?.reservationId) {
+            await cancelReservation(selectedSeat.reservationId, password);
             setSelectedSeat(null);
         }
     };
@@ -126,13 +126,14 @@ function App() {
             {showReservationPanel && (
                 <ReservationPanel
                     tables={tables}
+                    getAttendeeById={getAttendeeById}
                     onClose={() => setShowReservationPanel(false)}
                 />
             )}
 
             {showExcelUpload && currentEpisodeId && (
                 <ExcelUpload
-                    episodeId={parseInt(currentEpisodeId)}
+                    episodeId={currentEpisodeId}
                     onUploadSuccess={handleUploadSuccess}
                     onClose={() => setShowExcelUpload(false)}
                 />

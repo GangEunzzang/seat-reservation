@@ -15,8 +15,8 @@ import './Sidebar.css';
 
 interface SidebarProps {
     episodes: Episode[];
-    currentEpisodeId: string;
-    onEpisodeChange: (id: string) => void;
+    currentEpisodeId: number;
+    onEpisodeChange: (id: number) => void;
     onAddEpisode: (name: string) => void;
     onAddTable: () => void;
     isCollapsed: boolean;

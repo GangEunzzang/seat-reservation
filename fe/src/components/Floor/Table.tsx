@@ -11,7 +11,7 @@ interface TableProps {
     onSelect: () => void;
     onDragStop: (x: number, y: number) => void;
     onSeatClick: (seat: Seat) => void;
-    getAttendeeById?: (id: string) => Attendee | undefined;
+    getAttendeeById?: (id: number) => Attendee | undefined;
 }
 
 export const Table: FC<TableProps> = ({

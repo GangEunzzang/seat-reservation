@@ -114,10 +114,10 @@ export const ExcelUpload: FC<ExcelUploadProps> = ({episodeId, onUploadSuccess, o
                 episode_id: episodeId,
             }));
 
-            const users = await userApi.registerBulk(requests);
+            const response = await userApi.registerBulk(requests);
 
             // 백엔드 응답에서 받은 User ID를 attendee의 id로 설정
-            const attendees: Attendee[] = users.map((user, index) => ({
+            const attendees: Attendee[] = response.data.map((user, index) => ({
                 ...preview[index],
                 id: user.id,
             }));
