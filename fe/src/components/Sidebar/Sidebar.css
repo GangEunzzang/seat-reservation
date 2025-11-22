@@ -198,24 +198,3 @@
 .sidebar__add-form button:hover {
     background: #525252;
 }
-
-/* Episode Modal */
-.episode-modal {
-    max-width: 520px;
-}
-
-.episode-modal__row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
-
-.episode-modal__col {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.episode-modal__row:has(.episode-modal__col:only-child) {
-    grid-template-columns: 1fr;
-}

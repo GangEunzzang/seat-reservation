@@ -147,7 +147,7 @@ export const Sidebar: FC<SidebarProps> = ({
 
         {showAddEpisode && (
             <div className="modal-overlay" onClick={() => setShowAddEpisode(false)}>
-                <div className="modal episode-modal" onClick={e => e.stopPropagation()}>
+                <div className="modal" onClick={e => e.stopPropagation()}>
                     <div className="modal__header">
                         <h3>새 에피소드 추가</h3>
                         <button className="modal__close" onClick={() => setShowAddEpisode(false)}>✕</button>
@@ -164,37 +164,33 @@ export const Sidebar: FC<SidebarProps> = ({
                                 autoFocus
                             />
                         </div>
-                        <div className="episode-modal__row">
-                            <div className="episode-modal__col">
-                                <label htmlFor="episode-year">연도</label>
-                                <input
-                                    id="episode-year"
-                                    type="number"
-                                    placeholder={new Date().getFullYear().toString()}
-                                    value={newEpisodeYear}
-                                    onChange={e => setNewEpisodeYear(parseInt(e.target.value) || new Date().getFullYear())}
-                                />
-                            </div>
+                        <div>
+                            <label htmlFor="episode-year">연도</label>
+                            <input
+                                id="episode-year"
+                                type="number"
+                                placeholder={new Date().getFullYear().toString()}
+                                value={newEpisodeYear}
+                                onChange={e => setNewEpisodeYear(parseInt(e.target.value) || new Date().getFullYear())}
+                            />
                         </div>
-                        <div className="episode-modal__row">
-                            <div className="episode-modal__col">
-                                <label htmlFor="episode-start">시작일</label>
-                                <input
-                                    id="episode-start"
-                                    type="date"
-                                    value={newEpisodeStartDate}
-                                    onChange={e => setNewEpisodeStartDate(e.target.value)}
-                                />
-                            </div>
-                            <div className="episode-modal__col">
-                                <label htmlFor="episode-end">종료일</label>
-                                <input
-                                    id="episode-end"
-                                    type="date"
-                                    value={newEpisodeEndDate}
-                                    onChange={e => setNewEpisodeEndDate(e.target.value)}
-                                />
-                            </div>
+                        <div>
+                            <label htmlFor="episode-start">시작일</label>
+                            <input
+                                id="episode-start"
+                                type="date"
+                                value={newEpisodeStartDate}
+                                onChange={e => setNewEpisodeStartDate(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="episode-end">종료일</label>
+                            <input
+                                id="episode-end"
+                                type="date"
+                                value={newEpisodeEndDate}
+                                onChange={e => setNewEpisodeEndDate(e.target.value)}
+                            />
                         </div>
                         <button
                             className="modal__reserve-btn"
