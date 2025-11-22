@@ -7,7 +7,7 @@ import './ExcelUpload.css';
 
 interface ExcelUploadProps {
     episodeId: number;
-    onUploadSuccess: () => void;
+    onUploadSuccess: (attendees: Attendee[]) => void;
     onClose: () => void;
 }
 
@@ -74,7 +74,7 @@ export const ExcelUpload: FC<ExcelUploadProps> = ({episodeId, onUploadSuccess, o
                 }
 
                 attendees.push({
-                    id: `${Date.now()}-${index}`,
+                    id: 0, // 임시 ID, 백엔드 응답 후 실제 ID로 교체됨
                     branchName: String(branchName).trim(),
                     name: String(name).trim(),
                     position: String(position).trim(),
@@ -114,8 +114,15 @@ export const ExcelUpload: FC<ExcelUploadProps> = ({episodeId, onUploadSuccess, o
                 episode_id: episodeId,
             }));
 
-            await userApi.registerBulk(requests);
-            onUploadSuccess();
+            const users = await userApi.registerBulk(requests);
+
+            // 백엔드 응답에서 받은 User ID를 attendee의 id로 설정
+            const attendees: Attendee[] = users.map((user, index) => ({
+                ...preview[index],
+                id: user.id,
+            }));
+
+            onUploadSuccess(attendees);
             onClose();
         } catch (err) {
             if (err instanceof Error) {

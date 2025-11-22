@@ -17,6 +17,9 @@ from app.episode.application.episode_query_service import EpisodeQueryService
 from app.reservation.adapter.outbound.persistence.sqlalchemy_reservation_repository import SQLAlchemyReservationRepository
 from app.reservation.application.reservation_command_service import ReservationCommandService
 from app.reservation.application.reservation_query_service import ReservationQueryService
+from app.zone.adapter.outbound.persistence.sqlalchemy_zone_repository import SQLAlchemyZoneRepository
+from app.zone.application.zone_command_service import ZoneCommandService
+from app.zone.application.zone_query_service import ZoneQueryService
 
 
 # User Services
@@ -54,8 +57,9 @@ def get_seat_query_service(session: AsyncSession = Depends(get_async_session)) -
 
 # Episode Services
 def get_episode_command_service(session: AsyncSession = Depends(get_async_session)) -> EpisodeCommandService:
-    repository = SQLAlchemyEpisodeRepository(session)
-    return EpisodeCommandService(repository)
+    episode_repository = SQLAlchemyEpisodeRepository(session)
+    zone_repository = SQLAlchemyZoneRepository(session)
+    return EpisodeCommandService(episode_repository, zone_repository)
 
 
 def get_episode_query_service(session: AsyncSession = Depends(get_async_session)) -> EpisodeQueryService:
@@ -72,5 +76,16 @@ def get_reservation_command_service(session: AsyncSession = Depends(get_async_se
 def get_reservation_query_service(session: AsyncSession = Depends(get_async_session)) -> ReservationQueryService:
     repository = SQLAlchemyReservationRepository(session)
     return ReservationQueryService(repository)
+
+
+# Zone Services
+def get_zone_command_service(session: AsyncSession = Depends(get_async_session)) -> ZoneCommandService:
+    repository = SQLAlchemyZoneRepository(session)
+    return ZoneCommandService(repository)
+
+
+def get_zone_query_service(session: AsyncSession = Depends(get_async_session)) -> ZoneQueryService:
+    repository = SQLAlchemyZoneRepository(session)
+    return ZoneQueryService(repository)
 
 

@@ -1,5 +1,5 @@
 export interface Attendee {
-    id: string;
+    id: number;                // 백엔드 User ID
     branchName: string;
     name: string;
     position: string;
@@ -7,31 +7,35 @@ export interface Attendee {
 }
 
 export interface Seat {
-    id: string;
-    tableId: string;
+    id: number;                // 백엔드 Seat ID
+    tableId: number;           // 백엔드 Table ID
     seatNumber: number;
     isReserved: boolean;
-    attendeeId?: string;
+    attendeeId?: number;       // 예약한 Attendee의 백엔드 User ID
+    reservationId?: number;    // 백엔드 Reservation ID
 }
 
 export interface ZoneInfo {
-    id: string;
+    id: string;                // UI용 Zone ID (A, B, C, D)
     name: string;
 }
 
 export interface Table {
-    id: string;
+    id: number;                // 백엔드 Table ID
     x: number;
     y: number;
     seatCount: number;
     name: string;
     seats: Seat[];
-    zoneId: string;
+    zoneId: string;            // UI용 Zone ID
 }
 
 export interface Episode {
-    id: string;
+    id: number;                // 백엔드 Episode ID
     name: string;
+    year: number;
+    startDate: string;
+    endDate: string;
     tables: Table[];
     zones: ZoneInfo[];
     attendees: Attendee[];

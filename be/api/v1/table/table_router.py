@@ -1,7 +1,7 @@
 """Table API Router"""
 from fastapi import APIRouter, Depends, status
 
-from api.v1.table.table_request import TableCreateRequest
+from api.v1.table.table_request import TableCreateRequest, TableUpdatePositionRequest
 from api.v1.table.table_response import TableResponse
 from core.response.api_response import ApiResponse
 from app.dependencies import get_table_command_service, get_table_query_service
@@ -17,8 +17,19 @@ async def create_table(
     service: TableCommandService = Depends(get_table_command_service)
 ):
     """테이블 생성"""
-    table = await service.create(request.episode_id)
+    table = await service.create(request.episode_id, request.zone_id, request.x, request.y, request.name)
     return ApiResponse.success(TableResponse.model_validate(table), message="테이블 생성 완료")
+
+
+@router.patch("/{table_id}/position", response_model=ApiResponse[TableResponse])
+async def update_table_position(
+    table_id: int,
+    request: TableUpdatePositionRequest,
+    service: TableCommandService = Depends(get_table_command_service)
+):
+    """테이블 위치 수정"""
+    table = await service.update_position(table_id, request.x, request.y)
+    return ApiResponse.success(TableResponse.model_validate(table), message="테이블 위치 수정 완료")
 
 
 @router.get("/{table_id}", response_model=ApiResponse[TableResponse])

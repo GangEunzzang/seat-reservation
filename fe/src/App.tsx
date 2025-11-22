@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import type {Seat} from './types';
+import type {Seat, Attendee} from './types';
 import {useEpisodes} from './hooks/useEpisodes';
 import {Sidebar} from './components/Sidebar';
 import {Stage} from './components/Stage';
@@ -59,8 +59,8 @@ function App() {
         }
     };
 
-    const handleUploadSuccess = () => {
-        // TODO: 백엔드에서 참석자 목록을 다시 가져오기
+    const handleUploadSuccess = (attendees: Attendee[]) => {
+        addAttendees(attendees);
         setShowExcelUpload(false);
     };
 

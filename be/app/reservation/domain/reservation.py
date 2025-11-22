@@ -14,6 +14,7 @@ class Reservation(Base, Timestamp):
 	id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 	user_id: Mapped[int] = mapped_column(Integer, nullable=False)
 	seat_id: Mapped[int] = mapped_column(Integer, nullable=False)
+	password: Mapped[str] = mapped_column(String(100), nullable=False)
 	status: Mapped[str] = mapped_column(String(20), nullable=False, default=ReservationStatus.RESERVED.code)
 	reserved_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 	cancelled_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
@@ -29,11 +30,12 @@ class Reservation(Base, Timestamp):
 	)
 
 	@classmethod
-	def create(cls, user_id: int, seat_id: int) -> "Reservation":
+	def create(cls, user_id: int, seat_id: int, password: str) -> "Reservation":
 		"""예약 생성"""
 		return cls(
 			user_id=user_id,
 			seat_id=seat_id,
+			password=password,
 			status=ReservationStatus.RESERVED.code,
 			reserved_at=datetime.now(),
 			cancelled_at=None,
@@ -58,3 +60,7 @@ class Reservation(Base, Timestamp):
 	def is_cancelled(self) -> bool:
 		"""취소된 예약인지 확인"""
 		return self.get_status() == ReservationStatus.CANCELLED
+
+	def verify_password(self, password: str) -> bool:
+		"""비밀번호 검증"""
+		return self.password == password

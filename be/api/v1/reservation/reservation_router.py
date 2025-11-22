@@ -1,7 +1,7 @@
 """Reservation API Router"""
 from fastapi import APIRouter, Depends, status
 
-from api.v1.reservation.reservation_request import ReservationCreateRequest
+from api.v1.reservation.reservation_request import ReservationCreateRequest, ReservationCancelRequest
 from api.v1.reservation.reservation_response import ReservationResponse
 from core.response.api_response import ApiResponse
 from app.dependencies import get_reservation_command_service, get_reservation_query_service
@@ -17,7 +17,7 @@ async def create_reservation(
     service: ReservationCommandService = Depends(get_reservation_command_service)
 ):
     """예약 생성"""
-    reservation = await service.create(request.user_id, request.seat_id)
+    reservation = await service.create(request.user_id, request.seat_id, request.password)
     return ApiResponse.success(ReservationResponse.model_validate(reservation), message="예약 생성 완료")
 
 
@@ -44,10 +44,11 @@ async def list_reservations(
 @router.patch("/{reservation_id}/cancel", status_code=status.HTTP_204_NO_CONTENT)
 async def cancel_reservation(
     reservation_id: int,
+    request: ReservationCancelRequest,
     service: ReservationCommandService = Depends(get_reservation_command_service)
 ):
     """예약 취소"""
-    await service.cancel(reservation_id)
+    await service.cancel(reservation_id, request.password)
     return None
 
 

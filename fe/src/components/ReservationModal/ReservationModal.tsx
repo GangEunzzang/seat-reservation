@@ -25,6 +25,7 @@ export const ReservationModal: FC<ReservationModalProps> = ({
                                                             }) => {
     const [selectedAttendeeId, setSelectedAttendeeId] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [password, setPassword] = useState('');
     const [showResults, setShowResults] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(-1);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -174,8 +175,21 @@ export const ReservationModal: FC<ReservationModalProps> = ({
                         ) : (
                             <p>예약 정보를 찾을 수 없습니다.</p>
                         )}
+                        <div>
+                            <label htmlFor="cancel-password">비밀번호 (4자리)</label>
+                            <input
+                                id="cancel-password"
+                                type="password"
+                                placeholder="예약 시 설정한 비밀번호"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                maxLength={4}
+                                autoComplete="off"
+                            />
+                        </div>
                         <button
                             className="modal__cancel-btn"
+                            disabled={password.length !== 4}
                             onClick={() => {
                                 setConfirmType('cancel');
                                 setShowConfirm(true);
@@ -254,7 +268,20 @@ export const ReservationModal: FC<ReservationModalProps> = ({
                                     )}
                                 </div>
 
-                                <button type="submit" className="modal__reserve-btn" disabled={!selectedAttendeeId}>
+                                <div>
+                                    <label htmlFor="password">비밀번호 (4자리)</label>
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        placeholder="예약 취소 시 사용할 비밀번호"
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)}
+                                        maxLength={4}
+                                        autoComplete="off"
+                                    />
+                                </div>
+
+                                <button type="submit" className="modal__reserve-btn" disabled={!selectedAttendeeId || password.length !== 4}>
                                     예약하기
                                 </button>
                             </>
